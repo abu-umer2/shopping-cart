@@ -1,0 +1,32 @@
+.button-custom-style {
+   background-color: cadetblue;
+   cursor: pointer;
+   padding: 0.4rem;
+   font-family: Arial, Helvetica, sans-serif;
+   border-radius: 0.5rem;
+}
+
+.button-custom-style.primary {
+background-color: rgb(14, 60, 83);
+color: white;
+
+}
+.button-custom-style.secondary {
+background-color: rgb(117, 54, 36);
+color: white;
+
+}
+
+.button-custom-style.small {
+    font-size: 1rem;
+    padding: 0.3rem;
+}
+.button-custom-style.medium {
+    font-size: 1.3rem;
+    padding: 0.3rem;
+}
+.button-custom-style.larg {
+    font-size: 1.6rem;
+    padding: 0.3rem;
+}
+
