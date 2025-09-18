@@ -6,5 +6,7 @@ export default function Logout() {
   useEffect(() => {
     nav("./../../admin");
   });
-  return <div></div>;
+  return <div>
+    Logout success.
+  </div>;
 }
