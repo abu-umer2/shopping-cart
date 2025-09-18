@@ -23,7 +23,7 @@ export default function Category() {
             type="text"
             className="form-control"
             id="cat"
-            placeholder="Enter category name"
+            placeholder="Enter category name (Alphabets)"
             name="cat"
             value={cat}
             onChange={(e) => setCat(e.target.value)}
