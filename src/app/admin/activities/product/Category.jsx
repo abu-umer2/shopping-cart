@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../../../shared/controls/Input";
 import Button from "../../../shared/controls/Button";
 import axios from "axios";
@@ -6,6 +6,7 @@ import axios from "axios";
 export default function Category() {
   const [cat, setCat] = useState("");
   const [isActive, setIsActive] = useState(true);
+  const [categories, setCategories] = useState([]);
 
   const onSubmit = async () => {
     await axios.post("http://localhost:3000/categories", {
@@ -13,6 +14,12 @@ export default function Category() {
       isActive,
     });
   };
+
+  useEffect(() => {
+    axios.get("http://localhost:3000/categories").then((response) => {
+      setCategories(response.data);
+    });
+  }, []);
 
   return (
     <div className="container d-flex flex-column mt-5 justify-content-center align-items-center">
@@ -52,6 +59,37 @@ export default function Category() {
           ADD
         </Button>
       </form>
+
+      <div className="container rounded mt-2">
+        <table className="table table-bordered">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Sub-Categories</th>
+            </tr>
+          </thead>
+          <tbody>
+            {categories.map((cat) => (
+              <tr>
+                <td>{cat._id}</td>
+                <td>{cat.name}</td>
+                <td>
+                  {cat.subCategories.length > 0 ? (
+                    <ul>
+                      {cat.subCategories.map((sub) => (
+                        <li key={sub._id}>{sub.name}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <span>no categories found</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
