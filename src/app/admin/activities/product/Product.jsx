@@ -58,7 +58,6 @@ export default function Product() {
       await axios.post("http://localhost:3000/products", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("Product added successfully!");
       setName("");
       setDescription("");
       setPrice("");
@@ -72,8 +71,14 @@ export default function Product() {
       setProducts(res.data);
     } catch (error) {
       console.error(error);
-      alert("Error adding product");
     }
+  };
+
+  const handleDelete = (productId) => {
+    axios.delete(`http://localhost:3000/products/${productId}`);
+    setProducts((prevProducts) =>
+      prevProducts.filter((p) => p._id !== productId)
+    );
   };
 
   return (
@@ -94,19 +99,26 @@ export default function Product() {
 
               <td>
                 {Array.isArray(product.categoriesId)
-                  ? product.categoriesId.map((c) => c.name).join(", ")
+                  ? product.categoriesId.map((cat) => cat.name).join(", ")
                   : product.categoriesId?.name || "No Category"}
               </td>
 
               <td>
                 {Array.isArray(product.subCategoriesId)
-                  ? product.subCategoriesId.map((c) => c.name).join(", ")
+                  ? product.subCategoriesId.map((sub) => sub.name).join(", ")
                   : product.subCategoriesId?.name || "No Subcategory"}
               </td>
               <td>
                 <div className="d-flex gap-2">
                   <button className="btn btn-primary">Update</button>
-                  <button className="btn btn-danger">Delete</button>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => {
+                      handleDelete(product._id);
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
@@ -120,7 +132,7 @@ export default function Product() {
           data-bs-toggle="modal"
           data-bs-target="#myModal"
         >
-          Add Category
+          Add Product
         </button>
       </div>
       <div className="modal p-0 m-0" id="myModal">
