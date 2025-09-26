@@ -1,19 +1,21 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Product() {
   const [products, setProducts] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState(null);
-  const [price, setPrice] = useState("");
   const [review, setReview] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [error, updateError] = useState(false);
 
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subCategory, setSubCategory] = useState("");
+  let [price, updatePrice] = useState("");
+  let [product, updateProduct] = useState("");
   useEffect(() => {
     axios
       .get("http://localhost:3000/products")
@@ -42,43 +44,50 @@ export default function Product() {
     }
   };
   const onSubmit = async (e) => {
+    updateError(false);
+    alert(price);
+    alert(product);
+    if (price == "") {
+      updateError(true);
+    }
+    if (product == "") {
+      updateError(true);
+    }
+
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("description", description);
-    formData.append("price", price);
-    formData.append("review", review);
-    formData.append("categoriesId", category);
-    if (subCategory) {
-      formData.append("subCategoriesId", subCategory);
-    }
-    if (imageFile) formData.append("image", imageFile);
+    if (!error) {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("review", review);
+      formData.append("categoriesId", category);
+      if (subCategory) {
+        formData.append("subCategoriesId", subCategory);
+      }
+      if (imageFile) formData.append("image", imageFile);
 
-    try {
-      await axios.post("http://localhost:3000/products", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setName("");
-      setDescription("");
-      setPrice("");
-      setReview("");
-      setCategory("");
-      setSubCategory("");
-      setImageFile(null);
-      setImagePreview(null);
-      // refresh product list
-      const res = await axios.get("http://localhost:3000/products");
-      setProducts(res.data);
-    } catch (error) {
-      console.error(error);
+      try {
+        await axios.post("http://localhost:3000/products", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        alert("Product added successfully!");
+        setName("");
+        setDescription("");
+        //    setPrice("");
+        setReview("");
+        setCategory("");
+        setSubCategory("");
+        setImageFile(null);
+        setImagePreview(null);
+        // refresh product list
+        const res = await axios.get("http://localhost:3000/products");
+        setProducts(res.data);
+      } catch (error) {
+        console.error(error);
+        alert("Error adding product");
+      }
     }
-  };
-
-  const handleDelete = (productId) => {
-    axios.delete(`http://localhost:3000/products/${productId}`);
-    setProducts((prevProducts) =>
-      prevProducts.filter((p) => p._id !== productId)
-    );
   };
 
   return (
@@ -156,19 +165,26 @@ export default function Product() {
                         type="text"
                         className="form-control"
                         placeholder="Enter product name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={product}
+                        onChange={(e) => updateProduct(e.target.value)}
                       />
+                    </div>
+                    <div className="error-message">
+                      {error && product === "" ? "Enter Product" : ""}
                     </div>
                     <div className="d-flex align-items-center justify-content-between gap-4">
                       <label>Price</label>
                       <input
                         type="number"
                         className="form-control"
-                        placeholder="Enter product Price"
+                        name="txtPrice"
                         value={price}
-                        onChange={(e) => setPrice(e.target.value)}
+                        placeholder="Enter product Price"
+                        onChange={(e) => updatePrice(e.target.value)}
                       />
+                    </div>
+                    <div className="error-message">
+                      {error && price === "" ? "Enter Price" : ""}
                     </div>
                     <div className="d-flex align-items-center justify-content-between gap-3">
                       <label>Review</label>
