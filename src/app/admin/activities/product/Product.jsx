@@ -3,6 +3,7 @@ import Button from "../../../shared/controls/Button";
 import Input from "../../../shared/controls/Input";
 import api from "../../services/auth";
 import ProductsTable from "./ProductsTable";
+import { Modal } from "bootstrap"; 
 
 const Product = () => {
   const [products, setProducts] = useState([]);
@@ -82,10 +83,16 @@ const Product = () => {
       }
     }
   };
+ function loadUpdates(pro){
+  console.log(pro);
+ const myModalElement = document.getElementById('myModal');
+const myModal = new Modal(myModalElement);
+myModal.show();
 
+ }
   return (
     <div>
-      <ProductsTable products={products} />
+      <ProductsTable products={products} updateMethod={loadUpdates}/>
       <button
         type="button"
         className="btn btn-primary"
