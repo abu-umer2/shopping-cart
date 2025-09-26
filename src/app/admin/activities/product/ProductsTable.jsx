@@ -1,6 +1,6 @@
 import React from "react";
 
-const ProductsTable = ({ products }) => {
+const ProductsTable = ({ products,updateMethod }) => {
   return (
     <div className="container mt-3">
       <table class="table table-striped">
@@ -31,7 +31,7 @@ const ProductsTable = ({ products }) => {
 
               <td>
                 <div className="d-flex gap-2">
-                  <button className="btn btn-primary">Update</button>
+                  <button className="btn btn-primary" onClick={updateMethod.bind({},product)}>Update</button>
                 </div>
               </td>
             </tr>
