@@ -20,6 +20,8 @@ export default function Category() {
     });
   }, []);
 
+  
+
   return (
     <div className="container d-flex flex-column mt-5 justify-content-center align-items-center">
       <div className="container rounded mt-2">
