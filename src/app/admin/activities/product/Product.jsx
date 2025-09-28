@@ -1,40 +1,35 @@
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import Button from "../../../shared/controls/Button";
+import Input from "../../../shared/controls/Input";
+import api from "../../services/auth";
+import ProductsTable from "./ProductsTable";
+import { Modal } from "bootstrap"; 
 
-export default function Product() {
+const Product = () => {
   const [products, setProducts] = useState([]);
   const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [category, setCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [review, setReview] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
-  const [error, updateError] = useState(false);
+  const [error, setError] = useState(false);
 
-  const [category, setCategory] = useState("");
-  const [categories, setCategories] = useState([]);
-  const [subCategories, setSubCategories] = useState([]);
-  const [subCategory, setSubCategory] = useState("");
-  let [price,updatePrice] = useState('');
-  let [product,updateProduct] = useState('');
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/products")
-      .then((response) => setProducts(response.data));
-
-    axios.get("http://localhost:3000/categories").then((response) => {
-      setCategories(response.data);
-    });
+    api.get("/products").then((response) => setProducts(response.data));
+    api.get("/categories").then((response) => setCategories(response.data));
   }, []);
-
+  console.log("cat", category);
   useEffect(() => {
-    if (category) {
-      axios
-        .get(`http://localhost:3000/sub-categories/subs/${category}`)
-        .then((response) => setSubCategories(response.data));
-      setSubCategory(""); // reset subcategory
-    }
+    if (!category) return;
+    api
+      .get(`/sub-categories/subs/${category}`)
+      .then((response) => setSubCategories(response.data));
   }, [category]);
-  console.log(products);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -43,15 +38,14 @@ export default function Product() {
       setImagePreview(URL.createObjectURL(file));
     }
   };
+
   const onSubmit = async (e) => {
-    updateError(false);
-    alert(price)
-    alert(product)
-    if (price == "") {
-      updateError(true);
+    setError(false);
+    if (price === "") {
+      setError(true);
     }
-    if (product == "") {
-      updateError(true);
+    if (name === "") {
+      setError(true);
     }
 
     e.preventDefault();
@@ -68,20 +62,20 @@ export default function Product() {
       if (imageFile) formData.append("image", imageFile);
 
       try {
-        await axios.post("http://localhost:3000/products", formData, {
+        await api.post("/products", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("Product added successfully!");
         setName("");
         setDescription("");
-    //    setPrice("");
+        //    setPrice("");
         setReview("");
         setCategory("");
         setSubCategory("");
         setImageFile(null);
         setImagePreview(null);
         // refresh product list
-        const res = await axios.get("http://localhost:3000/products");
+        const res = await api.get("/products");
         setProducts(res.data);
       } catch (error) {
         console.error(error);
@@ -89,184 +83,163 @@ export default function Product() {
       }
     }
   };
+ function loadUpdates(pro){
+  console.log(pro);
+ const myModalElement = document.getElementById('myModal');
+const myModal = new Modal(myModalElement);
+myModal.show();
 
+ }
   return (
-    <div className="container d-flex flex-column justify-content-center">
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Subcategory</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product._id}>
-              <td>{product.name}</td>
-
-              <td>
-                {Array.isArray(product.categoriesId)
-                  ? product.categoriesId.map((c) => c.name).join(", ")
-                  : product.categoriesId?.name || "No Category"}
-              </td>
-
-              <td>
-                {Array.isArray(product.subCategoriesId)
-                  ? product.subCategoriesId.map((c) => c.name).join(", ")
-                  : product.subCategoriesId?.name || "No Subcategory"}
-              </td>
-              <td>
-                <div className="d-flex gap-2">
-                  <button className="btn btn-primary">Update</button>
-                  <button className="btn btn-danger">Delete</button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="d-flex justify-content-center">
-        <button
-          type="button"
-          className="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#myModal"
-        >
-          Add Category
-        </button>
-      </div>
-      <div className="modal p-0 m-0" id="myModal">
-        <div className="modal-dialog modal-xl">
-          <div className="modal-content justify-content-center text-center ">
-            <h4 className="modal-title my-4">Add Product</h4>
-
-            <div className="modal-body m-1 p-0">
-              <form
-                className="d-flex flex-column gap-3 align-items-center justify-content-center"
-                onSubmit={onSubmit}
-              >
-                <div
-                  className="d-flex justify-content-between "
-                  style={{ gap: "200px" }}
-                >
-                  <div className="d-flex flex-column gap-4">
-                    <div className="d-flex align-items-center justify-content-between gap-3">
-                      <label>Name</label>
-                      <input
+    <div>
+      <ProductsTable products={products} updateMethod={loadUpdates}/>
+      <button
+        type="button"
+        className="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#myModal"
+      >
+        Add Product
+      </button>
+      <div className="modal" id="myModal">
+        <div className="modal-dialog modal-dialog-centered modal-lg  ">
+          <div className="modal-content">
+            <div className="modal-body ">
+              {/* from */}
+              <form className="overflow-hidden" onSubmit={onSubmit}>
+                <div className="row">
+                  {/* Left side */}
+                  <div className="col-12 col-md-6 d-flex flex-column gap-3">
+                    <div className="d-flex align-items-center gap-3">
+                      <label>Name:</label>
+                      <Input
+                        className="form-control flex-grow-1"
                         type="text"
-                        className="form-control"
-                        placeholder="Enter product name"
-                        value={product}
-                       onChange={(e)=>updateProduct(e.target.value)}
+                        placeholder="Enter Product Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                       />
                     </div>
                     <div className="error-message">
-                      {(error && product === "")
-                        ? "Enter Product"
-                        : ""}
+                      {error && name === "" ? "Enter Product" : ""}
                     </div>
-                    <div className="d-flex align-items-center justify-content-between gap-4">
-                      <label>Price</label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        name="txtPrice"
-                        value={price}
-                        placeholder="Enter product Price"
-                        onChange={(e)=>updatePrice(e.target.value)}
-                      />
-                    </div>
-                    <div className="error-message">
-                      {(error && price === "")
-                        ? "Enter Price"
-                        : ""}
-                    </div>
-                    <div className="d-flex align-items-center justify-content-between gap-3">
-                      <label>Review</label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        placeholder="Enter product review"
-                        value={review}
-                        onChange={(e) => setReview(e.target.value)}
-                      />
-                    </div>
-                  </div>
 
-                  <div className="d-flex flex-column gap-4">
-                    <div className="d-flex  gap-5 align-items-start">
-                      <label>Category</label>
+                    <div className="d-flex align-items-center gap-3">
+                      <label>Category:</label>
                       <select
                         className="form-select"
-                        style={{ width: "300px" }}
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
                       >
-                        <option value="">Choose Category</option>
+                        <option>Select Category</option>
                         {categories.map((cat) => (
                           <option key={cat._id} value={cat._id}>
                             {cat.name}
                           </option>
                         ))}
                       </select>
+                      <div className="error-message">
+                        {error && category === "" ? "choose Category" : ""}
+                      </div>
                     </div>
-                    <div className="d-flex  gap-4 align-items-start">
-                      <label>SubCategory</label>
+                    <div className="d-flex align-items-center gap-3">
+                      <label>Review:</label>
                       <select
                         className="form-select"
-                        style={{ width: "300px" }}
-                        aria-label="Default select example"
+                        value={review}
+                        onChange={(e) => setReview(e.target.value)}
+                      >
+                        <option>Select</option>
+                        <option value={1}>1</option>
+                        <option value={2}>2</option>
+                        <option value={3}>3</option>
+                        <option value={4}>4</option>
+                        <option value={5}>5</option>
+                      </select>
+                    </div>
+                    <div className="error-message">
+                      {error && review === "" ? "Enter review" : ""}
+                    </div>
+                  </div>
+                  {/* Right side */}
+                  <div className="col-12 col-md-6 d-flex flex-column gap-3 ">
+                    <div className="d-flex align-items-center gap-3">
+                      <label>Price:</label>
+                      <Input
+                        className="form-control flex-grow-1"
+                        type="text"
+                        placeholder="Enter Product Name"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                      />
+                    </div>
+                    <div className="error-message">
+                      {error && price === "" ? "Enter price" : ""}
+                    </div>
+
+                    <div className="d-flex align-items-center gap-3">
+                      <label>Sub-Category:</label>
+                      <select
+                        className="form-select"
+                        value={subCategory}
                         onChange={(e) => setSubCategory(e.target.value)}
                       >
-                        <option value="">Choose SubCategory</option>
+                        <option>Select sub-Category</option>
                         {subCategories.map((sub) => (
                           <option key={sub._id} value={sub._id}>
                             {sub.name}
                           </option>
                         ))}
                       </select>
+                      <div className="error-message">
+                        {error && subCategory === ""
+                          ? "Choose Sub-category"
+                          : ""}
+                      </div>
                     </div>
-                    <div
-                      className="d-flex   align-items-start"
-                      style={{ gap: "76px" }}
-                    >
-                      <label>Image</label>
+                    <div className="d-flex align-items-center gap-3">
+                      <label>Image:</label>
                       <input type="file" onChange={handleImageChange} />
                       {imagePreview && (
-                        <img
-                          src={imagePreview}
-                          alt="Preview"
-                          width="100"
-                          className="mt-2 border"
-                        />
+                        <div>
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            style={{ width: "100px", height: "auto" }}
+                          />
+                        </div>
                       )}
                     </div>
                   </div>
+                  <div className="error-message">
+                    {error && imageFile === "" ? "Upload image" : ""}
+                  </div>
                 </div>
-                <div
-                  className="d-flex flex-column align-items-center justify-content-between gap-3"
-                  style={{ width: "80%" }}
-                >
-                  <label>Description</label>
+                <div className="mt-2">
+                  <label>Description:</label>
                   <textarea
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter product Description"
+                    name="discription"
+                    className=" "
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
+                    style={{ width: "100%" }}
                   />
                 </div>
+                <div className="error-message">
+                  {error && description === "" ? "Enter Desctiption" : ""}
+                </div>
 
-                <div className="d-flex gap-3 mt-3">
-                  <button type="submit" className="btn btn-primary">
-                    ADD
-                  </button>
+                {/* control buttons */}
+
+                <div className="d-flex justify-content-center align-items-center gap-4 p-1">
+                  <Button size="larg" type="submit">
+                    Add Product
+                  </Button>
+
                   <button
                     type="button"
+                    className="btn btn-danger px-5"
                     data-bs-dismiss="modal"
-                    className="btn btn-secondary"
                   >
                     Close
                   </button>
@@ -278,4 +251,6 @@ export default function Product() {
       </div>
     </div>
   );
-}
+};
+
+export default Product;
