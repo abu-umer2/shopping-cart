@@ -3,7 +3,7 @@ import Button from "../../../shared/controls/Button";
 import Input from "../../../shared/controls/Input";
 import api from "../../services/auth";
 import ProductsTable from "./ProductsTable";
-import { Modal } from "bootstrap"; 
+import { Modal } from "bootstrap";
 
 const Product = () => {
   const [products, setProducts] = useState([]);
@@ -18,6 +18,8 @@ const Product = () => {
   const [review, setReview] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     api.get("/products").then((response) => setProducts(response.data));
@@ -35,18 +37,15 @@ const Product = () => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+
+      console.log("preview URL:", previewUrl);
     }
   };
 
   const onSubmit = async (e) => {
     setError(false);
-    if (price === "") {
-      setError(true);
-    }
-    if (name === "") {
-      setError(true);
-    }
 
     e.preventDefault();
     if (!error) {
@@ -59,22 +58,35 @@ const Product = () => {
       if (subCategory) {
         formData.append("subCategoriesId", subCategory);
       }
-      if (imageFile) formData.append("image", imageFile);
+      if (imageFile) {
+        formData.append("image", imageFile);
+      } else if (edit && selectedProduct.image) {
+        formData.append("image", selectedProduct.image);
+      }
 
       try {
-        await api.post("/products", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        alert("Product added successfully!");
+        if (edit) {
+          await api.patch(`/products/${selectedProduct._id}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          alert("Product updated successfully!");
+          setEdit(false);
+          closeModal();
+        } else {
+          await api.post("/products", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          alert("Product added successfully!");
+        }
+
         setName("");
         setDescription("");
-        //    setPrice("");
+        setPrice("");
         setReview("");
         setCategory("");
         setSubCategory("");
         setImageFile(null);
         setImagePreview(null);
-        // refresh product list
         const res = await api.get("/products");
         setProducts(res.data);
       } catch (error) {
@@ -83,16 +95,42 @@ const Product = () => {
       }
     }
   };
- function loadUpdates(pro){
-  console.log(pro);
- const myModalElement = document.getElementById('myModal');
-const myModal = new Modal(myModalElement);
-myModal.show();
+  function loadUpdates(pro) {
+    console.log(pro);
+    setSelectedProduct(pro);
+    setName(pro.name || "");
+    setDescription(pro.description || "");
+    setPrice(pro.price || "");
+    setReview(pro.review || "");
+    setCategory(pro.categoriesId || "");
+    setSubCategory(pro.subCategoriesId || "");
+    setImagePreview(pro.image || null);
 
- }
+    const myModalElement = document.getElementById("myModal");
+    if (myModalElement) {
+      let myModal = Modal.getInstance(myModalElement);
+      if (!myModal) {
+        myModal = new Modal(myModalElement);
+      }
+      myModal.show();
+    }
+  }
+  const closeModal = () => {
+    const myModalElement = document.getElementById("myModal");
+    if (myModalElement) {
+      const modal = Modal.getInstance(myModalElement);
+      if (modal) {
+        modal.hide();
+      }
+    }
+  };
   return (
     <div>
-      <ProductsTable products={products} updateMethod={loadUpdates}/>
+      <ProductsTable
+        products={products}
+        updateMethod={loadUpdates}
+        setEdit={setEdit}
+      />
       <button
         type="button"
         className="btn btn-primary"
@@ -197,13 +235,15 @@ myModal.show();
                           : ""}
                       </div>
                     </div>
-                    <div className="d-flex align-items-center gap-3">
-                      <label>Image:</label>
-                      <input type="file" onChange={handleImageChange} />
+                    <div>
+                      <div className="d-flex align-items-center gap-3">
+                        <label>Image:</label>
+                        <input type="file" onChange={handleImageChange} />
+                      </div>
                       {imagePreview && (
                         <div>
                           <img
-                            src={imagePreview}
+                            src={imagePreview || null}
                             alt="Preview"
                             style={{ width: "100px", height: "auto" }}
                           />
@@ -233,7 +273,7 @@ myModal.show();
 
                 <div className="d-flex justify-content-center align-items-center gap-4 p-1">
                   <Button size="larg" type="submit">
-                    Add Product
+                    {edit ? "Update Product" : "Add Product"}
                   </Button>
 
                   <button
