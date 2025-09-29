@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../../../shared/controls/Button";
 import Input from "../../../shared/controls/Input";
 import api from "../../services/auth";
 import ProductsTable from "./ProductsTable";
-import { Modal } from "bootstrap";
+import Modal from "bootstrap/js/dist/modal";
 
 const Product = () => {
   const [products, setProducts] = useState([]);
@@ -20,6 +20,7 @@ const Product = () => {
   const [error, setError] = useState(false);
   const [edit, setEdit] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const modalRef = useRef(null);
 
   useEffect(() => {
     api.get("/products").then((response) => setProducts(response.data));
@@ -69,7 +70,6 @@ const Product = () => {
           await api.patch(`/products/${selectedProduct._id}`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
           });
-          alert("Product updated successfully!");
           setEdit(false);
           closeModal();
         } else {
@@ -136,6 +136,7 @@ const Product = () => {
         className="btn btn-primary"
         data-bs-toggle="modal"
         data-bs-target="#myModal"
+        ref={modalRef}
       >
         Add Product
       </button>
@@ -280,6 +281,7 @@ const Product = () => {
                     type="button"
                     className="btn btn-danger px-5"
                     data-bs-dismiss="modal"
+                    onClick={() => setEdit(false)}
                   >
                     Close
                   </button>
