@@ -10,7 +10,6 @@ const ProductsTable = ({ products, updateMethod, setEdit }) => {
             <th>Product Price</th>
 
             <th>Product Action</th>
-            <th>Product Image</th>
           </tr>
         </thead>
         <tbody>
@@ -18,16 +17,8 @@ const ProductsTable = ({ products, updateMethod, setEdit }) => {
             <tr key={product._id}>
               <td>{product.name}</td>
 
-              <td>
-                {product.categoriesId
-                  ? product.categoriesId?.name
-                  : "No Category"}
-              </td>
-              <td>
-                {product.subCategoriesId
-                  ? product.subCategoriesId?.name
-                  : "No Subcategory"}
-              </td>
+              <td>{product.categoriesId.name}</td>
+              <td>{product.subCategoriesId.name}</td>
               <td>{product.price}</td>
 
               <td>
@@ -41,17 +32,6 @@ const ProductsTable = ({ products, updateMethod, setEdit }) => {
                   >
                     Update
                   </button>
-                </div>
-              </td>
-              <td>
-                <div className="d-flex gap-2">
-                  <div>
-                    <img
-                      src={product.image || null}
-                      alt="Preview"
-                      style={{ width: "100px", height: "auto" }}
-                    />
-                  </div>
                 </div>
               </td>
             </tr>
