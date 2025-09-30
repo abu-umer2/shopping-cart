@@ -19,11 +19,20 @@ const Product = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [stock, setStock] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [sizes, setSizes] = useState([]);
+  const [sizeInput, setSizeInput] = useState("");
+  const [colors, setColors] = useState([]);
+  const [colorInput, setColorInput] = useState("");
   const modalRef = useRef(null);
 
   useEffect(() => {
-    api.get("/products").then((response) => setProducts(response.data));
+    const response = api.get("/products").then((response) => {
+      setProducts(response.data);
+      console.log(response.data);
+    });
+    console.log(response.data);
     api.get("/categories").then((response) => setCategories(response.data));
   }, []);
   console.log("cat", category);
@@ -56,6 +65,10 @@ const Product = () => {
       formData.append("price", price);
       formData.append("review", review);
       formData.append("categoriesId", category);
+      formData.append("stock", stock);
+      sizes.forEach((size) => formData.append("sizes[]", size));
+      colors.forEach((color) => formData.append("colors[]", color));
+
       if (subCategory) {
         formData.append("subCategoriesId", subCategory);
       }
@@ -64,7 +77,7 @@ const Product = () => {
       } else if (edit && selectedProduct.image) {
         formData.append("image", selectedProduct.image);
       }
-
+      console.log("for", formData);
       try {
         if (edit) {
           await api.patch(`/products/${selectedProduct._id}`, formData, {
@@ -78,15 +91,8 @@ const Product = () => {
           });
           alert("Product added successfully!");
         }
+        resetForm();
 
-        setName("");
-        setDescription("");
-        setPrice("");
-        setReview("");
-        setCategory("");
-        setSubCategory("");
-        setImageFile(null);
-        setImagePreview(null);
         const res = await api.get("/products");
         setProducts(res.data);
       } catch (error) {
@@ -95,6 +101,24 @@ const Product = () => {
       }
     }
   };
+
+  const resetForm = () => {
+    setSelectedProduct(null);
+    setName("");
+    setDescription("");
+    setPrice("");
+    setReview("");
+    setCategory("");
+    setSubCategory("");
+    setImageFile(null);
+    setImagePreview(null);
+    setError(false);
+    setColors([]);
+    setColorInput("");
+    setSizes([]);
+    setSizeInput("");
+    setStock(0);
+  };
   function loadUpdates(pro) {
     console.log(pro);
     setSelectedProduct(pro);
@@ -102,9 +126,12 @@ const Product = () => {
     setDescription(pro.description || "");
     setPrice(pro.price || "");
     setReview(pro.review || "");
-    setCategory(pro.categoriesId || "");
-    setSubCategory(pro.subCategoriesId || "");
+    setCategory(pro.categoriesId._id || "");
+    setSubCategory(pro.subCategoriesId._id || "");
+    setStock(pro.stock._id || "");
     setImagePreview(pro.image || null);
+    setSizes(Array.isArray(pro.sizes) ? pro.sizes : []);
+    setColors(Array.isArray(pro.colors) ? pro.colors : []);
 
     const myModalElement = document.getElementById("myModal");
     if (myModalElement) {
@@ -124,6 +151,28 @@ const Product = () => {
       }
     }
   };
+
+  const addSize = () => {
+    if (sizeInput && !sizes.includes(sizeInput)) {
+      setSizes([...sizes, sizeInput]);
+      setSizeInput("");
+    }
+  };
+
+  const removeSize = (sizeToRemove) => {
+    setSizes(sizes.filter((s) => s !== sizeToRemove));
+  };
+  const addColor = () => {
+    if (colorInput && !colors.includes(colorInput)) {
+      setColors([...colors, colorInput]);
+      setColorInput("");
+    }
+  };
+
+  const removeColor = (colorToRemove) => {
+    setColors(colors.filter((c) => c !== colorToRemove));
+  };
+
   return (
     <div>
       <ProductsTable
@@ -137,11 +186,12 @@ const Product = () => {
         data-bs-toggle="modal"
         data-bs-target="#myModal"
         ref={modalRef}
+        onClick={() => resetForm()}
       >
         Add Product
       </button>
       <div className="modal" id="myModal">
-        <div className="modal-dialog modal-dialog-centered modal-lg  ">
+        <div className="modal-dialog modal-dialog-centered modal-xl  ">
           <div className="modal-content">
             <div className="modal-body ">
               {/* from */}
@@ -149,26 +199,28 @@ const Product = () => {
                 <div className="row">
                   {/* Left side */}
                   <div className="col-12 col-md-6 d-flex flex-column gap-3">
-                    <div className="d-flex align-items-center gap-3">
+                    <div className="d-flex align-items-center gap-3 justify-content-between">
                       <label>Name:</label>
                       <Input
-                        className="form-control flex-grow-1"
+                        className="form-control"
                         type="text"
                         placeholder="Enter Product Name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        style={{ width: "250px" }}
                       />
                     </div>
                     <div className="error-message">
                       {error && name === "" ? "Enter Product" : ""}
                     </div>
 
-                    <div className="d-flex align-items-center gap-3">
+                    <div className="d-flex align-items-center justify-content-between">
                       <label>Category:</label>
                       <select
                         className="form-select"
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
+                        style={{ width: "250px" }}
                       >
                         <option>Select Category</option>
                         {categories.map((cat) => (
@@ -177,51 +229,77 @@ const Product = () => {
                           </option>
                         ))}
                       </select>
-                      <div className="error-message">
-                        {error && category === "" ? "choose Category" : ""}
-                      </div>
-                    </div>
-                    <div className="d-flex align-items-center gap-3">
-                      <label>Review:</label>
-                      <select
-                        className="form-select"
-                        value={review}
-                        onChange={(e) => setReview(e.target.value)}
-                      >
-                        <option>Select</option>
-                        <option value={1}>1</option>
-                        <option value={2}>2</option>
-                        <option value={3}>3</option>
-                        <option value={4}>4</option>
-                        <option value={5}>5</option>
-                      </select>
                     </div>
                     <div className="error-message">
-                      {error && review === "" ? "Enter review" : ""}
+                      {error && category === "" ? "choose Category" : ""}
+                    </div>
+                    <div className="mb-3 d-flex justify-content-between align-items-center">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={addSize}
+                      >
+                        Add Size
+                      </button>
+                      <input
+                        type="text"
+                        placeholder="Enter size (S, M, L...)"
+                        className="form-control"
+                        value={sizeInput}
+                        onChange={(e) => setSizeInput(e.target.value)}
+                        style={{ width: "250px" }}
+                      />
+                    </div>
+                    <div className="mb-3">
+                      {sizes.map((size) => (
+                        <span
+                          key={size}
+                          className="badge bg-secondary me-2"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => removeSize(size)}
+                        >
+                          {size} &times;
+                        </span>
+                      ))}
+                    </div>
+                    <div className="d-flex align-items-center  justify-content-between">
+                      <label>Description:</label>
+                      <textarea
+                        name="discription"
+                        className=" form-control"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        style={{ width: "250px" }}
+                      />
+                    </div>
+                    <div className="error-message">
+                      {error && description === "" ? "Enter Desctiption" : ""}
                     </div>
                   </div>
                   {/* Right side */}
                   <div className="col-12 col-md-6 d-flex flex-column gap-3 ">
-                    <div className="d-flex align-items-center gap-3">
+                    <div className="d-flex align-items-center justify-content-between">
                       <label>Price:</label>
                       <Input
-                        className="form-control flex-grow-1"
+                        className="form-control"
                         type="text"
                         placeholder="Enter Product Name"
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
+                        style={{ width: "250px" }}
                       />
                     </div>
                     <div className="error-message">
                       {error && price === "" ? "Enter price" : ""}
                     </div>
 
-                    <div className="d-flex align-items-center gap-3">
+                    <div className="d-flex align-items-center justify-content-between">
                       <label>Sub-Category:</label>
                       <select
                         className="form-select"
                         value={subCategory}
                         onChange={(e) => setSubCategory(e.target.value)}
+                        style={{ width: "250px" }}
                       >
                         <option>Select sub-Category</option>
                         {subCategories.map((sub) => (
@@ -230,16 +308,62 @@ const Product = () => {
                           </option>
                         ))}
                       </select>
-                      <div className="error-message">
-                        {error && subCategory === ""
-                          ? "Choose Sub-category"
-                          : ""}
-                      </div>
+                    </div>
+                    <div className="error-message">
+                      {error && subCategory === "" ? "Choose Sub-category" : ""}
                     </div>
                     <div>
-                      <div className="d-flex align-items-center gap-3">
+                      <div className="mb-3 d-flex justify-content-between align-items-center">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={addColor}
+                        >
+                          Add Color
+                        </button>
+                        <input
+                          type="text"
+                          placeholder="Enter size (S, M, L...)"
+                          className="form-control"
+                          value={colorInput}
+                          onChange={(e) => setColorInput(e.target.value)}
+                          style={{ width: "250px" }}
+                        />
+                      </div>
+
+                      <div className="mb-3">
+                        {colors.map((color) => (
+                          <span
+                            key={color}
+                            className="badge bg-secondary me-2"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => removeColor(color)}
+                          >
+                            {color} &times;
+                          </span>
+                        ))}
+                      </div>
+                      <div className="d-flex align-items-center mb-3 justify-content-between">
+                        <label>Stock:</label>
+                        <Input
+                          className="form-control"
+                          type="number"
+                          placeholder="Enter Product Stok"
+                          value={stock}
+                          onChange={(e) => setStock(e.target.value)}
+                          style={{ width: "250px" }}
+                        />
+                      </div>
+                      <div className="error-message">
+                        {error && stock === "" ? "Enter stock" : ""}
+                      </div>
+                      <div className="d-flex align-items-center justify-content-between">
                         <label>Image:</label>
-                        <input type="file" onChange={handleImageChange} />
+                        <input
+                          type="file"
+                          onChange={handleImageChange}
+                          style={{ width: "250px" }}
+                        />
                       </div>
                       {imagePreview && (
                         <div>
@@ -256,19 +380,6 @@ const Product = () => {
                     {error && imageFile === "" ? "Upload image" : ""}
                   </div>
                 </div>
-                <div className="mt-2">
-                  <label>Description:</label>
-                  <textarea
-                    name="discription"
-                    className=" "
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    style={{ width: "100%" }}
-                  />
-                </div>
-                <div className="error-message">
-                  {error && description === "" ? "Enter Desctiption" : ""}
-                </div>
 
                 {/* control buttons */}
 
@@ -281,7 +392,10 @@ const Product = () => {
                     type="button"
                     className="btn btn-danger px-5"
                     data-bs-dismiss="modal"
-                    onClick={() => setEdit(false)}
+                    onClick={() => {
+                      setEdit(false);
+                      resetForm();
+                    }}
                   >
                     Close
                   </button>
