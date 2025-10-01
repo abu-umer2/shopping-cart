@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../../../shared/controls/Button";
 import Input from "../../../shared/controls/Input";
 import api from "../../services/auth";
 import ProductsTable from "./ProductsTable";
-import { Modal } from "bootstrap"; 
+import Modal from "bootstrap/js/dist/modal";
 
 const Product = () => {
   const [products, setProducts] = useState([]);
@@ -18,9 +18,20 @@ const Product = () => {
   const [review, setReview] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [stock, setStock] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [size, setSize] = useState("");
+  const [color, setColor] = useState("");
+
+  const modalRef = useRef(null);
 
   useEffect(() => {
-    api.get("/products").then((response) => setProducts(response.data));
+    const response = api.get("/products").then((response) => {
+      setProducts(response.data);
+      console.log(response.data);
+    });
+    console.log(response.data);
     api.get("/categories").then((response) => setCategories(response.data));
   }, []);
   console.log("cat", category);
@@ -35,18 +46,15 @@ const Product = () => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+
+      console.log("preview URL:", previewUrl);
     }
   };
 
   const onSubmit = async (e) => {
     setError(false);
-    if (price === "") {
-      setError(true);
-    }
-    if (name === "") {
-      setError(true);
-    }
 
     e.preventDefault();
     if (!error) {
@@ -56,25 +64,34 @@ const Product = () => {
       formData.append("price", price);
       formData.append("review", review);
       formData.append("categoriesId", category);
+      formData.append("stock", stock);
+      formData.append("size", size);
+      formData.append("color", color);
+
       if (subCategory) {
         formData.append("subCategoriesId", subCategory);
       }
-      if (imageFile) formData.append("image", imageFile);
-
+      if (imageFile) {
+        formData.append("image", imageFile);
+      } else if (edit && selectedProduct.image) {
+        formData.append("image", selectedProduct.image);
+      }
+      console.log("for", formData);
       try {
-        await api.post("/products", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        alert("Product added successfully!");
-        setName("");
-        setDescription("");
-        //    setPrice("");
-        setReview("");
-        setCategory("");
-        setSubCategory("");
-        setImageFile(null);
-        setImagePreview(null);
-        // refresh product list
+        if (edit) {
+          await api.patch(`/products/${selectedProduct._id}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          setEdit(false);
+          //closeModal();
+        } else {
+          await api.post("/products", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          alert("Product added successfully!");
+        }
+        resetForm();
+
         const res = await api.get("/products");
         setProducts(res.data);
       } catch (error) {
@@ -83,26 +100,75 @@ const Product = () => {
       }
     }
   };
- function loadUpdates(pro){
-  console.log(pro);
- const myModalElement = document.getElementById('myModal');
-const myModal = new Modal(myModalElement);
-myModal.show();
 
- }
+  const resetForm = () => {
+    setSelectedProduct(null);
+    setName("");
+    setDescription("");
+    setPrice("");
+    setReview("");
+    setCategory("");
+    setSubCategory("");
+    setImageFile(null);
+    setImagePreview(null);
+    setError(false);
+    setColor("");
+    setSize("");
+    setStock(0);
+    displayModal();
+  };
+  function loadUpdates(pro) {
+    console.log(pro);
+    setSelectedProduct(pro);
+    setName(pro.name || "");
+    setDescription(pro.description || "");
+    setPrice(pro.price || "");
+    setReview(pro.review || "");
+    setCategory(pro.categoriesId._id || "");
+    setSubCategory(pro.subCategoriesId._id || "");
+    setStock(pro.stock._id || "");
+    setSize(pro.stock._id || "");
+    setImagePreview(pro.image || null);
+    displayModal();
+  }
+  function displayModal() {
+    const myModalElement = document.getElementById("myModal");
+    if (myModalElement) {
+      let myModal = Modal.getInstance(myModalElement);
+      if (!myModal) {
+        myModal = new Modal(myModalElement);
+      }
+      myModal.show();
+    }
+  }
+  const closeModal = () => {
+    const myModalElement = document.getElementById("myModal");
+    if (myModalElement) {
+      const modal = Modal.getInstance(myModalElement);
+      if (modal) {
+        modal.hide();
+      }
+    }
+  };
+
   return (
     <div>
-      <ProductsTable products={products} updateMethod={loadUpdates}/>
-      <button
+      <ProductsTable
+        products={products}
+        updateMethod={loadUpdates}
+        setEdit={setEdit}
+      />
+      <Button
         type="button"
+        size="small"
         className="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#myModal"
+        ref={modalRef}
+        onClick={() => resetForm()}
       >
         Add Product
-      </button>
+      </Button>
       <div className="modal" id="myModal">
-        <div className="modal-dialog modal-dialog-centered modal-lg  ">
+        <div className="modal-dialog modal-dialog-centered modal-xl  ">
           <div className="modal-content">
             <div className="modal-body ">
               {/* from */}
@@ -110,26 +176,28 @@ myModal.show();
                 <div className="row">
                   {/* Left side */}
                   <div className="col-12 col-md-6 d-flex flex-column gap-3">
-                    <div className="d-flex align-items-center gap-3">
+                    <div className="d-flex align-items-center gap-3 justify-content-between">
                       <label>Name:</label>
                       <Input
-                        className="form-control flex-grow-1"
+                        className="form-control"
                         type="text"
                         placeholder="Enter Product Name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        style={{ width: "250px" }}
                       />
                     </div>
                     <div className="error-message">
                       {error && name === "" ? "Enter Product" : ""}
                     </div>
 
-                    <div className="d-flex align-items-center gap-3">
+                    <div className="d-flex align-items-center justify-content-between">
                       <label>Category:</label>
                       <select
                         className="form-select"
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
+                        style={{ width: "250px" }}
                       >
                         <option>Select Category</option>
                         {categories.map((cat) => (
@@ -138,51 +206,64 @@ myModal.show();
                           </option>
                         ))}
                       </select>
-                      <div className="error-message">
-                        {error && category === "" ? "choose Category" : ""}
-                      </div>
-                    </div>
-                    <div className="d-flex align-items-center gap-3">
-                      <label>Review:</label>
-                      <select
-                        className="form-select"
-                        value={review}
-                        onChange={(e) => setReview(e.target.value)}
-                      >
-                        <option>Select</option>
-                        <option value={1}>1</option>
-                        <option value={2}>2</option>
-                        <option value={3}>3</option>
-                        <option value={4}>4</option>
-                        <option value={5}>5</option>
-                      </select>
                     </div>
                     <div className="error-message">
-                      {error && review === "" ? "Enter review" : ""}
+                      {error && category === "" ? "choose Category" : ""}
+                    </div>
+
+                    <div className="d-flex align-items-center gap-3 justify-content-between">
+                      <label>Size:</label>
+                      <Input
+                        className="form-control"
+                        type="text"
+                        placeholder="Enter product size"
+                        value={size}
+                        onChange={(e) => setSize(e.target.value)}
+                        style={{ width: "250px" }}
+                      />
+                    </div>
+                    <div className="error-message">
+                      {error && size === "" ? "Enter size" : ""}
+                    </div>
+
+                    <div className="d-flex align-items-center  justify-content-between">
+                      <label>Description:</label>
+                      <textarea
+                        name="discription"
+                        className=" form-control"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        style={{ width: "250px" }}
+                      />
+                    </div>
+                    <div className="error-message">
+                      {error && description === "" ? "Enter Desctiption" : ""}
                     </div>
                   </div>
                   {/* Right side */}
                   <div className="col-12 col-md-6 d-flex flex-column gap-3 ">
-                    <div className="d-flex align-items-center gap-3">
+                    <div className="d-flex align-items-center justify-content-between">
                       <label>Price:</label>
                       <Input
-                        className="form-control flex-grow-1"
+                        className="form-control"
                         type="text"
                         placeholder="Enter Product Name"
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
+                        style={{ width: "250px" }}
                       />
                     </div>
                     <div className="error-message">
                       {error && price === "" ? "Enter price" : ""}
                     </div>
 
-                    <div className="d-flex align-items-center gap-3">
+                    <div className="d-flex align-items-center justify-content-between">
                       <label>Sub-Category:</label>
                       <select
                         className="form-select"
                         value={subCategory}
                         onChange={(e) => setSubCategory(e.target.value)}
+                        style={{ width: "250px" }}
                       >
                         <option>Select sub-Category</option>
                         {subCategories.map((sub) => (
@@ -191,19 +272,51 @@ myModal.show();
                           </option>
                         ))}
                       </select>
-                      <div className="error-message">
-                        {error && subCategory === ""
-                          ? "Choose Sub-category"
-                          : ""}
-                      </div>
                     </div>
-                    <div className="d-flex align-items-center gap-3">
-                      <label>Image:</label>
-                      <input type="file" onChange={handleImageChange} />
+                    <div className="error-message">
+                      {error && subCategory === "" ? "Choose Sub-category" : ""}
+                    </div>
+                    <div>
+                      <div className="d-flex align-items-center gap-3 justify-content-between mb-2">
+                        <label>Color:</label>
+                        <Input
+                          className="form-control"
+                          type="text"
+                          placeholder="Enter The product color"
+                          value={color}
+                          onChange={(e) => setColor(e.target.value)}
+                          style={{ width: "250px" }}
+                        />
+                      </div>
+                      <div className="error-message">
+                        {error && color === "" ? "Enter color" : ""}
+                      </div>
+                      <div className="d-flex align-items-center mb-3 justify-content-between">
+                        <label>Stock:</label>
+                        <Input
+                          className="form-control"
+                          type="number"
+                          placeholder="Enter Product Stok"
+                          value={stock}
+                          onChange={(e) => setStock(e.target.value)}
+                          style={{ width: "250px" }}
+                        />
+                      </div>
+                      <div className="error-message">
+                        {error && stock === "" ? "Enter stock" : ""}
+                      </div>
+                      <div className="d-flex align-items-center justify-content-between">
+                        <label>Image:</label>
+                        <input
+                          type="file"
+                          onChange={handleImageChange}
+                          style={{ width: "250px" }}
+                        />
+                      </div>
                       {imagePreview && (
                         <div>
                           <img
-                            src={imagePreview}
+                            src={imagePreview || null}
                             alt="Preview"
                             style={{ width: "100px", height: "auto" }}
                           />
@@ -215,34 +328,31 @@ myModal.show();
                     {error && imageFile === "" ? "Upload image" : ""}
                   </div>
                 </div>
-                <div className="mt-2">
-                  <label>Description:</label>
-                  <textarea
-                    name="discription"
-                    className=" "
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    style={{ width: "100%" }}
-                  />
-                </div>
-                <div className="error-message">
-                  {error && description === "" ? "Enter Desctiption" : ""}
-                </div>
 
                 {/* control buttons */}
 
                 <div className="d-flex justify-content-center align-items-center gap-4 p-1">
-                  <Button size="larg" type="submit">
-                    Add Product
+                  <Button
+                    size="small"
+                    type="submit"
+                    className="btn btn-danger px-5"
+                  >
+                    {edit ? "Update Product" : "Add Product"}
                   </Button>
 
-                  <button
+                  <Button
                     type="button"
                     className="btn btn-danger px-5"
                     data-bs-dismiss="modal"
+                    size="small"
+                    onClick={() => {
+                      setEdit(false);
+                      resetForm();
+                      closeModal();
+                    }}
                   >
                     Close
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>
