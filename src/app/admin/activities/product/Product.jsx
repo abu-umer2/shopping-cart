@@ -84,7 +84,7 @@ const Product = () => {
             headers: { "Content-Type": "multipart/form-data" },
           });
           setEdit(false);
-          closeModal();
+          //closeModal();
         } else {
           await api.post("/products", formData, {
             headers: { "Content-Type": "multipart/form-data" },
@@ -118,6 +118,7 @@ const Product = () => {
     setSizes([]);
     setSizeInput("");
     setStock(0);
+    displayModal();
   };
   function loadUpdates(pro) {
     console.log(pro);
@@ -132,7 +133,10 @@ const Product = () => {
     setImagePreview(pro.image || null);
     setSizes(Array.isArray(pro.sizes) ? pro.sizes : []);
     setColors(Array.isArray(pro.colors) ? pro.colors : []);
-
+    displayModal();
+  }
+  function displayModal(){
+    
     const myModalElement = document.getElementById("myModal");
     if (myModalElement) {
       let myModal = Modal.getInstance(myModalElement);
@@ -183,8 +187,8 @@ const Product = () => {
       <button
         type="button"
         className="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#myModal"
+        // data-bs-toggle="modal"
+        // data-bs-target="#myModal"
         ref={modalRef}
         onClick={() => resetForm()}
       >
