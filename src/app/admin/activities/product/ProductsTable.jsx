@@ -1,5 +1,5 @@
 import Button from "../../../shared/controls/Button";
-const ProductsTable = ({ products, updateMethod }) => {
+const ProductsTable = ({ products, updateMethod, setEdit }) => {
   return (
     <div className="container mt-3">
       <table class="table table-striped">
@@ -33,7 +33,10 @@ const ProductsTable = ({ products, updateMethod }) => {
                   <Button
                     className=""
                     size="small"
-                    onClick={updateMethod.bind({}, product)}
+                    onClick={() => {
+                      updateMethod(product);
+                      setEdit(true);
+                    }}
                   >
                     Update
                   </Button>
