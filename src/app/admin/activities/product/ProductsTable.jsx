@@ -1,6 +1,5 @@
-import React from "react";
-
-const ProductsTable = ({ products,updateMethod }) => {
+import Button from "../../../shared/controls/Button";
+const ProductsTable = ({ products, updateMethod }) => {
   return (
     <div className="container mt-3">
       <table class="table table-striped">
@@ -31,7 +30,13 @@ const ProductsTable = ({ products,updateMethod }) => {
 
               <td>
                 <div className="d-flex gap-2">
-                  <button className="btn btn-primary" onClick={updateMethod.bind({},product)}>Update</button>
+                  <Button
+                    className=""
+                    size="small"
+                    onClick={updateMethod.bind({}, product)}
+                  >
+                    Update
+                  </Button>
                 </div>
               </td>
             </tr>
