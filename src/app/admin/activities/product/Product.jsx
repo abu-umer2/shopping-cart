@@ -174,7 +174,7 @@ const Product = () => {
 
         type="button"
         size="small"
-        className="btn btn-primary"
+        className=""
 
         ref={modalRef}
         onClick={() => resetForm()}
@@ -350,20 +350,17 @@ const Product = () => {
                 {/* control buttons */}
 
                 <div className="d-flex justify-content-center align-items-center gap-4 p-1">
-                  <Button
-                    size="small"
-                    type="submit"
-                    className="btn btn-danger px-5"
-                  >
+                  <Button size="small" type="submit" className=" px-5">
 
                     {edit ? "Update Product" : "Add Product"}
                   </Button>
 
                   <Button
                     type="button"
-                    className="btn btn-danger px-5"
+                    className="px-5"
                     data-bs-dismiss="modal"
                     size="small"
+                    variant="close"
                     onClick={() => {
                       setEdit(false);
                       resetForm();
