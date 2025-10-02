@@ -1,3 +1,4 @@
+import Button from "../../../shared/controls/Button";
 const ProductsTable = ({ products, updateMethod, setEdit }) => {
   return (
     <div className="container mt-3">
@@ -23,15 +24,17 @@ const ProductsTable = ({ products, updateMethod, setEdit }) => {
 
               <td>
                 <div className="d-flex gap-2">
-                  <button
-                    className="btn btn-primary"
+                  <Button
+                    className=""
+                    size="small"
                     onClick={() => {
                       updateMethod(product);
                       setEdit(true);
                     }}
                   >
                     Update
-                  </button>
+                  </Button>
+
                 </div>
               </td>
             </tr>
