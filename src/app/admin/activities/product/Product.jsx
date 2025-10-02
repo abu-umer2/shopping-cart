@@ -21,8 +21,10 @@ const Product = () => {
   const [edit, setEdit] = useState(false);
   const [stock, setStock] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
+
 
   const modalRef = useRef(null);
 
@@ -65,8 +67,11 @@ const Product = () => {
       formData.append("review", review);
       formData.append("categoriesId", category);
       formData.append("stock", stock);
+
       formData.append("size", size);
       formData.append("color", color);
+
+
 
       if (subCategory) {
         formData.append("subCategoriesId", subCategory);
@@ -112,8 +117,10 @@ const Product = () => {
     setImageFile(null);
     setImagePreview(null);
     setError(false);
+
     setColor("");
     setSize("");
+
     setStock(0);
     displayModal();
   };
@@ -127,11 +134,13 @@ const Product = () => {
     setCategory(pro.categoriesId._id || "");
     setSubCategory(pro.subCategoriesId._id || "");
     setStock(pro.stock._id || "");
+
     setSize(pro.stock._id || "");
     setImagePreview(pro.image || null);
     displayModal();
   }
   function displayModal() {
+
     const myModalElement = document.getElementById("myModal");
     if (myModalElement) {
       let myModal = Modal.getInstance(myModalElement);
@@ -151,6 +160,7 @@ const Product = () => {
     }
   };
 
+
   return (
     <div>
       <ProductsTable
@@ -158,10 +168,14 @@ const Product = () => {
         updateMethod={loadUpdates}
         setEdit={setEdit}
       />
+
       <Button
+
+
         type="button"
         size="small"
         className="btn btn-primary"
+
         ref={modalRef}
         onClick={() => resetForm()}
       >
@@ -226,6 +240,8 @@ const Product = () => {
                       {error && size === "" ? "Enter size" : ""}
                     </div>
 
+
+
                     <div className="d-flex align-items-center  justify-content-between">
                       <label>Description:</label>
                       <textarea
@@ -285,6 +301,7 @@ const Product = () => {
                           placeholder="Enter The product color"
                           value={color}
                           onChange={(e) => setColor(e.target.value)}
+
                           style={{ width: "250px" }}
                         />
                       </div>
@@ -303,6 +320,7 @@ const Product = () => {
                         />
                       </div>
                       <div className="error-message">
+
                         {error && stock === "" ? "Enter stock" : ""}
                       </div>
                       <div className="d-flex align-items-center justify-content-between">
@@ -337,6 +355,7 @@ const Product = () => {
                     type="submit"
                     className="btn btn-danger px-5"
                   >
+
                     {edit ? "Update Product" : "Add Product"}
                   </Button>
 
@@ -349,6 +368,7 @@ const Product = () => {
                       setEdit(false);
                       resetForm();
                       closeModal();
+
                     }}
                   >
                     Close
