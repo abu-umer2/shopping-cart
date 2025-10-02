@@ -20,6 +20,7 @@ const Product = () => {
   const [edit, setEdit] = useState(false);
   const [stock, setStock] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
+
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
   const [errors, setErrors] = useState({});
@@ -106,6 +107,7 @@ const Product = () => {
       formData.append("review", review);
       formData.append("categoriesId", category);
       formData.append("stock", stock);
+
       formData.append("size", size);
       formData.append("color", color);
 
@@ -171,6 +173,7 @@ const Product = () => {
     setSize(pro?.size || "");
     setColor(pro?.color || "");
     setImagePreview(pro?.image || null);
+
     displayModal();
   }
   function displayModal() {
@@ -200,6 +203,7 @@ const Product = () => {
         updateMethod={loadUpdates}
         setEdit={setEdit}
       />
+
       <Button
         type="button"
         size="small"
