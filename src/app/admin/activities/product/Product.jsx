@@ -21,10 +21,11 @@ const Product = () => {
   const [edit, setEdit] = useState(false);
   const [stock, setStock] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [sizes, setSizes] = useState([]);
-  const [sizeInput, setSizeInput] = useState("");
-  const [colors, setColors] = useState([]);
-  const [colorInput, setColorInput] = useState("");
+
+  const [size, setSize] = useState("");
+  const [color, setColor] = useState("");
+
+
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -66,8 +67,11 @@ const Product = () => {
       formData.append("review", review);
       formData.append("categoriesId", category);
       formData.append("stock", stock);
-      sizes.forEach((size) => formData.append("sizes[]", size));
-      colors.forEach((color) => formData.append("colors[]", color));
+
+      formData.append("size", size);
+      formData.append("color", color);
+
+
 
       if (subCategory) {
         formData.append("subCategoriesId", subCategory);
@@ -113,10 +117,10 @@ const Product = () => {
     setImageFile(null);
     setImagePreview(null);
     setError(false);
-    setColors([]);
-    setColorInput("");
-    setSizes([]);
-    setSizeInput("");
+
+    setColor("");
+    setSize("");
+
     setStock(0);
     displayModal();
   };
@@ -130,13 +134,13 @@ const Product = () => {
     setCategory(pro.categoriesId._id || "");
     setSubCategory(pro.subCategoriesId._id || "");
     setStock(pro.stock._id || "");
+
+    setSize(pro.stock._id || "");
     setImagePreview(pro.image || null);
-    setSizes(Array.isArray(pro.sizes) ? pro.sizes : []);
-    setColors(Array.isArray(pro.colors) ? pro.colors : []);
     displayModal();
   }
-  function displayModal(){
-    
+  function displayModal() {
+
     const myModalElement = document.getElementById("myModal");
     if (myModalElement) {
       let myModal = Modal.getInstance(myModalElement);
@@ -156,26 +160,6 @@ const Product = () => {
     }
   };
 
-  const addSize = () => {
-    if (sizeInput && !sizes.includes(sizeInput)) {
-      setSizes([...sizes, sizeInput]);
-      setSizeInput("");
-    }
-  };
-
-  const removeSize = (sizeToRemove) => {
-    setSizes(sizes.filter((s) => s !== sizeToRemove));
-  };
-  const addColor = () => {
-    if (colorInput && !colors.includes(colorInput)) {
-      setColors([...colors, colorInput]);
-      setColorInput("");
-    }
-  };
-
-  const removeColor = (colorToRemove) => {
-    setColors(colors.filter((c) => c !== colorToRemove));
-  };
 
   return (
     <div>
@@ -184,16 +168,19 @@ const Product = () => {
         updateMethod={loadUpdates}
         setEdit={setEdit}
       />
-      <button
+
+      <Button
+
+
         type="button"
+        size="small"
         className="btn btn-primary"
-        // data-bs-toggle="modal"
-        // data-bs-target="#myModal"
+
         ref={modalRef}
         onClick={() => resetForm()}
       >
         Add Product
-      </button>
+      </Button>
       <div className="modal" id="myModal">
         <div className="modal-dialog modal-dialog-centered modal-xl  ">
           <div className="modal-content">
@@ -237,35 +224,24 @@ const Product = () => {
                     <div className="error-message">
                       {error && category === "" ? "choose Category" : ""}
                     </div>
-                    <div className="mb-3 d-flex justify-content-between align-items-center">
-                      <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={addSize}
-                      >
-                        Add Size
-                      </button>
-                      <input
-                        type="text"
-                        placeholder="Enter size (S, M, L...)"
+
+                    <div className="d-flex align-items-center gap-3 justify-content-between">
+                      <label>Size:</label>
+                      <Input
                         className="form-control"
-                        value={sizeInput}
-                        onChange={(e) => setSizeInput(e.target.value)}
+                        type="text"
+                        placeholder="Enter product size"
+                        value={size}
+                        onChange={(e) => setSize(e.target.value)}
                         style={{ width: "250px" }}
                       />
                     </div>
-                    <div className="mb-3">
-                      {sizes.map((size) => (
-                        <span
-                          key={size}
-                          className="badge bg-secondary me-2"
-                          style={{ cursor: "pointer" }}
-                          onClick={() => removeSize(size)}
-                        >
-                          {size} &times;
-                        </span>
-                      ))}
+                    <div className="error-message">
+                      {error && size === "" ? "Enter size" : ""}
                     </div>
+
+
+
                     <div className="d-flex align-items-center  justify-content-between">
                       <label>Description:</label>
                       <textarea
@@ -317,35 +293,20 @@ const Product = () => {
                       {error && subCategory === "" ? "Choose Sub-category" : ""}
                     </div>
                     <div>
-                      <div className="mb-3 d-flex justify-content-between align-items-center">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={addColor}
-                        >
-                          Add Color
-                        </button>
-                        <input
-                          type="text"
-                          placeholder="Enter size (S, M, L...)"
+                      <div className="d-flex align-items-center gap-3 justify-content-between mb-2">
+                        <label>Color:</label>
+                        <Input
                           className="form-control"
-                          value={colorInput}
-                          onChange={(e) => setColorInput(e.target.value)}
+                          type="text"
+                          placeholder="Enter The product color"
+                          value={color}
+                          onChange={(e) => setColor(e.target.value)}
+
                           style={{ width: "250px" }}
                         />
                       </div>
-
-                      <div className="mb-3">
-                        {colors.map((color) => (
-                          <span
-                            key={color}
-                            className="badge bg-secondary me-2"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => removeColor(color)}
-                          >
-                            {color} &times;
-                          </span>
-                        ))}
+                      <div className="error-message">
+                        {error && color === "" ? "Enter color" : ""}
                       </div>
                       <div className="d-flex align-items-center mb-3 justify-content-between">
                         <label>Stock:</label>
@@ -359,6 +320,7 @@ const Product = () => {
                         />
                       </div>
                       <div className="error-message">
+
                         {error && stock === "" ? "Enter stock" : ""}
                       </div>
                       <div className="d-flex align-items-center justify-content-between">
@@ -388,21 +350,29 @@ const Product = () => {
                 {/* control buttons */}
 
                 <div className="d-flex justify-content-center align-items-center gap-4 p-1">
-                  <Button size="larg" type="submit">
+                  <Button
+                    size="small"
+                    type="submit"
+                    className="btn btn-danger px-5"
+                  >
+
                     {edit ? "Update Product" : "Add Product"}
                   </Button>
 
-                  <button
+                  <Button
                     type="button"
                     className="btn btn-danger px-5"
                     data-bs-dismiss="modal"
+                    size="small"
                     onClick={() => {
                       setEdit(false);
                       resetForm();
+                      closeModal();
+
                     }}
                   >
                     Close
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>
