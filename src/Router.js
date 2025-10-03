@@ -7,6 +7,7 @@ import Subcat from "./app/admin/activities/product/Subcat";
 import Product from "./app/admin/activities/product/Product";
 import Logout from "./app/admin/Logout";
 import AdminLanding from "./app/admin/AdminLandingPage";
+import Landing from "./app/user/components/Landing";
 export default function Router() {
   return (
     <BrowserRouter>
@@ -26,7 +27,9 @@ export default function Router() {
           <Route path="product" element={<Product />} />
           <Route path="logout" element={<Logout />} />
         </Route>
-        <Route path="user" element={<UserLanding />} />
+        <Route path="user" element={<UserLanding />} >
+         <Route path="" element={<Landing />} />
+        </Route>
         <Route path="*" element={<Pagenotfound />} />
       </Routes>
     </BrowserRouter>
