@@ -17,16 +17,21 @@ const Product = () => {
   const [imageFile, setImageFile] = useState(null);
   const [review, setReview] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
-  const [error, setError] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [stock, setStock] = useState(0);
+  const [stock, setStock] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
-
+  const [errors, setErrors] = useState({});
 
   const modalRef = useRef(null);
+  const nameRef = useRef(null);
+  const priceRef = useRef(null);
+  const descriptionRef = useRef(null);
+  const stockRef = useRef(null);
+  const sizeRef = useRef(null);
+  const colorRef = useRef(null);
 
   useEffect(() => {
     const response = api.get("/products").then((response) => {
@@ -54,12 +59,47 @@ const Product = () => {
       console.log("preview URL:", previewUrl);
     }
   };
+  const validateForm = () => {
+    const newErrors = {};
+    if (!nameRef.current.value.trim()) {
+      newErrors.name = "Name is Required";
+    }
+
+    if (!priceRef.current.value.trim()) {
+      newErrors.price = "Price is Required";
+    }
+    if (!category) {
+      newErrors.category = "Category is required";
+    }
+
+    if (!subCategory) {
+      newErrors.subCategory = "SubCategory is required";
+    }
+    if (!descriptionRef.current.value.trim()) {
+      newErrors.description = "Description is Required";
+    }
+    if (!stockRef.current.value.trim()) {
+      newErrors.stock = "Stock is Required";
+    }
+    if (!sizeRef.current.value.trim()) {
+      newErrors.size = "Size is Required";
+    }
+    if (!colorRef.current.value.trim()) {
+      newErrors.color = "Color is Required";
+    }
+    if (!imageFile && !edit) {
+      newErrors.image = "Image is Required";
+    }
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
 
   const onSubmit = async (e) => {
-    setError(false);
+    setErrors(false);
 
     e.preventDefault();
-    if (!error) {
+    if (validateForm()) {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("description", description);
@@ -70,8 +110,6 @@ const Product = () => {
 
       formData.append("size", size);
       formData.append("color", color);
-
-
 
       if (subCategory) {
         formData.append("subCategoriesId", subCategory);
@@ -88,7 +126,8 @@ const Product = () => {
             headers: { "Content-Type": "multipart/form-data" },
           });
           setEdit(false);
-          //closeModal();
+          closeModal();
+          alert("Product updated successfully!");
         } else {
           await api.post("/products", formData, {
             headers: { "Content-Type": "multipart/form-data" },
@@ -116,13 +155,10 @@ const Product = () => {
     setSubCategory("");
     setImageFile(null);
     setImagePreview(null);
-    setError(false);
-
     setColor("");
     setSize("");
-
-    setStock(0);
-    displayModal();
+    setStock("");
+    setErrors({});
   };
   function loadUpdates(pro) {
     console.log(pro);
@@ -131,16 +167,16 @@ const Product = () => {
     setDescription(pro.description || "");
     setPrice(pro.price || "");
     setReview(pro.review || "");
-    setCategory(pro.categoriesId._id || "");
-    setSubCategory(pro.subCategoriesId._id || "");
-    setStock(pro.stock._id || "");
+    setCategory(pro?.categoriesId?._id || "");
+    setSubCategory(pro?.subCategoriesId?._id || "");
+    setStock(pro?.stock || "");
+    setSize(pro?.size || "");
+    setColor(pro?.color || "");
+    setImagePreview(pro?.image || null);
 
-    setSize(pro.stock._id || "");
-    setImagePreview(pro.image || null);
     displayModal();
   }
   function displayModal() {
-
     const myModalElement = document.getElementById("myModal");
     if (myModalElement) {
       let myModal = Modal.getInstance(myModalElement);
@@ -160,7 +196,6 @@ const Product = () => {
     }
   };
 
-
   return (
     <div>
       <ProductsTable
@@ -170,18 +205,23 @@ const Product = () => {
       />
 
       <Button
-
-
         type="button"
         size="small"
         className=""
-
         ref={modalRef}
-        onClick={() => resetForm()}
+        onClick={() => {
+          resetForm();
+          displayModal();
+        }}
       >
         Add Product
       </Button>
-      <div className="modal" id="myModal">
+      <div
+        className="modal"
+        id="myModal"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+      >
         <div className="modal-dialog modal-dialog-centered modal-xl  ">
           <div className="modal-content">
             <div className="modal-body ">
@@ -197,12 +237,15 @@ const Product = () => {
                         type="text"
                         placeholder="Enter Product Name"
                         value={name}
+                        ref={nameRef}
                         onChange={(e) => setName(e.target.value)}
                         style={{ width: "250px" }}
                       />
                     </div>
                     <div className="error-message">
-                      {error && name === "" ? "Enter Product" : ""}
+                      {errors.name && (
+                        <p className="text-danger">{errors.name}</p>
+                      )}
                     </div>
 
                     <div className="d-flex align-items-center justify-content-between">
@@ -222,7 +265,9 @@ const Product = () => {
                       </select>
                     </div>
                     <div className="error-message">
-                      {error && category === "" ? "choose Category" : ""}
+                      {errors.category && (
+                        <p className="text-danger">{errors.category}</p>
+                      )}
                     </div>
 
                     <div className="d-flex align-items-center gap-3 justify-content-between">
@@ -232,15 +277,16 @@ const Product = () => {
                         type="text"
                         placeholder="Enter product size"
                         value={size}
+                        ref={sizeRef}
                         onChange={(e) => setSize(e.target.value)}
                         style={{ width: "250px" }}
                       />
                     </div>
                     <div className="error-message">
-                      {error && size === "" ? "Enter size" : ""}
+                      {errors.size && (
+                        <p className="text-danger">{errors.size}</p>
+                      )}
                     </div>
-
-
 
                     <div className="d-flex align-items-center  justify-content-between">
                       <label>Description:</label>
@@ -248,12 +294,15 @@ const Product = () => {
                         name="discription"
                         className=" form-control"
                         value={description}
+                        ref={descriptionRef}
                         onChange={(e) => setDescription(e.target.value)}
                         style={{ width: "250px" }}
                       />
                     </div>
                     <div className="error-message">
-                      {error && description === "" ? "Enter Desctiption" : ""}
+                      {errors.description && (
+                        <p className="text-danger">{errors.description}</p>
+                      )}
                     </div>
                   </div>
                   {/* Right side */}
@@ -265,12 +314,15 @@ const Product = () => {
                         type="text"
                         placeholder="Enter Product Name"
                         value={price}
+                        ref={priceRef}
                         onChange={(e) => setPrice(e.target.value)}
                         style={{ width: "250px" }}
                       />
                     </div>
                     <div className="error-message">
-                      {error && price === "" ? "Enter price" : ""}
+                      {errors.price && (
+                        <p className="text-danger">{errors.price}</p>
+                      )}
                     </div>
 
                     <div className="d-flex align-items-center justify-content-between">
@@ -290,7 +342,9 @@ const Product = () => {
                       </select>
                     </div>
                     <div className="error-message">
-                      {error && subCategory === "" ? "Choose Sub-category" : ""}
+                      {errors.subCategory && (
+                        <p className="text-danger">{errors.subCategory}</p>
+                      )}
                     </div>
                     <div>
                       <div className="d-flex align-items-center gap-3 justify-content-between mb-2">
@@ -300,13 +354,15 @@ const Product = () => {
                           type="text"
                           placeholder="Enter The product color"
                           value={color}
+                          ref={colorRef}
                           onChange={(e) => setColor(e.target.value)}
-
                           style={{ width: "250px" }}
                         />
                       </div>
                       <div className="error-message">
-                        {error && color === "" ? "Enter color" : ""}
+                        {errors.color && (
+                          <p className="text-danger">{errors.color}</p>
+                        )}
                       </div>
                       <div className="d-flex align-items-center mb-3 justify-content-between">
                         <label>Stock:</label>
@@ -315,13 +371,15 @@ const Product = () => {
                           type="number"
                           placeholder="Enter Product Stok"
                           value={stock}
+                          ref={stockRef}
                           onChange={(e) => setStock(e.target.value)}
                           style={{ width: "250px" }}
                         />
                       </div>
                       <div className="error-message">
-
-                        {error && stock === "" ? "Enter stock" : ""}
+                        {errors.stock && (
+                          <p className="text-danger">{errors.stock}</p>
+                        )}
                       </div>
                       <div className="d-flex align-items-center justify-content-between">
                         <label>Image:</label>
@@ -330,6 +388,11 @@ const Product = () => {
                           onChange={handleImageChange}
                           style={{ width: "250px" }}
                         />
+                        <div className="error-message">
+                          {errors.image && (
+                            <p className="text-danger">{errors.image}</p>
+                          )}
+                        </div>
                       </div>
                       {imagePreview && (
                         <div>
@@ -342,16 +405,12 @@ const Product = () => {
                       )}
                     </div>
                   </div>
-                  <div className="error-message">
-                    {error && imageFile === "" ? "Upload image" : ""}
-                  </div>
                 </div>
 
                 {/* control buttons */}
 
                 <div className="d-flex justify-content-center align-items-center gap-4 p-1">
                   <Button size="small" type="submit" className=" px-5">
-
                     {edit ? "Update Product" : "Add Product"}
                   </Button>
 
@@ -365,7 +424,6 @@ const Product = () => {
                       setEdit(false);
                       resetForm();
                       closeModal();
-
                     }}
                   >
                     Close
