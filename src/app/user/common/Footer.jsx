@@ -9,7 +9,7 @@ export default function Footer() {
       </div>
 
       <div className="container row mt-5 p-5 mx-5 ">
-        <div className="md-col-3 col-12 ">
+        <div className="col-md-3 col-sm-12 mb-4 ">
           <p className="fw-bold">Get to Know Us</p>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             <li>About Sh-Cart</li>
@@ -17,7 +17,7 @@ export default function Footer() {
             <li>Sh-Cart Science</li>
           </ul>
         </div>
-        <div className="md-col-3 col-12">
+        <div className="col-md-3 col-sm-12 mb-4">
           <p className="fw-bold">Shop with Us</p>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             <li>Your Account</li>
@@ -26,7 +26,7 @@ export default function Footer() {
             <li>Your Lists </li>
           </ul>
         </div>
-        <div className="md-col-3 col-12">
+        <div className="col-md-3 col-sm-12 mb-4">
           <p className="fw-bold">Make Money with Us</p>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             <li>Protect and build your brand</li>
@@ -37,7 +37,7 @@ export default function Footer() {
             <li>dvertise Your Products</li>
           </ul>
         </div>
-        <div className="md-col-3 col-12">
+        <div className="col-md-3 col-sm-12 mb-4">
           <p className="fw-bold">Let Us Help You</p>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             <li>Help</li>
