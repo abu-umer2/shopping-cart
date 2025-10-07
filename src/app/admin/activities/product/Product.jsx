@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import Button from "../../../shared/controls/Button";
 import Input from "../../../shared/controls/Input";
-import api from "../../services/auth";
 import ProductsTable from "./ProductsTable";
 import Modal from "bootstrap/js/dist/modal";
-
+import AuthServices from "../../services/auth";
 const Product = () => {
   const [products, setProducts] = useState([]);
   const [name, setName] = useState("");
@@ -33,20 +32,38 @@ const Product = () => {
   const sizeRef = useRef(null);
   const colorRef = useRef(null);
 
+  const fetchProducts = async () => {
+    try {
+      const res = await AuthServices.fetchProducts();
+      setProducts(res.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
   useEffect(() => {
-    const response = api.get("/products").then((response) => {
-      setProducts(response.data);
-      console.log(response.data);
-    });
-    console.log(response.data);
-    api.get("/categories").then((response) => setCategories(response.data));
+    const fetchCategories = async () => {
+      try {
+        const res = await AuthServices.fetchCategories();
+        setCategories(res.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchProducts();
+    fetchCategories();
   }, []);
-  console.log("cat", category);
   useEffect(() => {
     if (!category) return;
-    api
-      .get(`/sub-categories/subs/${category}`)
-      .then((response) => setSubCategories(response.data));
+    const fetchSubCategories = async () => {
+      try {
+        const res = await AuthServices.fetchSubCategories(category);
+        setSubCategories(res.data);
+      } catch (error) {
+        console.error("Error fetching subCategories:", error);
+      }
+    };
+    fetchSubCategories();
   }, [category]);
 
   const handleImageChange = (e) => {
@@ -122,22 +139,19 @@ const Product = () => {
       console.log("for", formData);
       try {
         if (edit) {
-          await api.patch(`/products/${selectedProduct._id}`, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
+          await AuthServices.updateProduct(selectedProduct._id, formData);
+
           setEdit(false);
           closeModal();
           alert("Product updated successfully!");
         } else {
-          await api.post("/products", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
+          await AuthServices.createProduct(formData);
+
           alert("Product added successfully!");
         }
         resetForm();
 
-        const res = await api.get("/products");
-        setProducts(res.data);
+        fetchProducts();
       } catch (error) {
         console.error(error);
         alert("Error adding product");

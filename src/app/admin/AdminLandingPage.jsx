@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import Button from "../shared/controls/Button";
 import { useNavigate } from "react-router-dom";
 import Input from "../shared/controls/Input";
-import axios from "axios";
-
+import AuthServices from "./services/auth";
 export default function AdminLanding() {
   const nav = useNavigate();
   const [username, setUsername] = useState("");
@@ -12,16 +11,19 @@ export default function AdminLanding() {
   const login = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/auth/login", {
-        username,
-        password,
-      });
-      console.log(response);
+      const res = await AuthServices.CheckLogin(username, password);
+      console.log(res.data);
+      alert("Login successful!");
       localStorage.setItem("adminAuth", 1);
-      nav("../adminHome");
+      nav("/adminHome");
     } catch (error) {
       console.error(error);
-      alert("Invalid username or password");
+
+      if (error.response?.status === 401) {
+        alert("Invalid username or password");
+      } else {
+        alert("Login failed. Please try again later.");
+      }
     }
   };
 
