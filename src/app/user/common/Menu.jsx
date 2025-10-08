@@ -1,20 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ProductServices from "../../services/productServices";
 export default function Menu() {
   var [category, updateCat] = useState([]);
+  var [subCategories, updateSubCategories] = useState([]);
   useEffect(() => {
-    ProductServices.fetchCategories().then(data=>{
+    ProductServices.fetchCategories().then((data) => {
       console.log(data.data);
-    updateCat(data.data);
-    })
+      updateCat(data.data);
+    });
   }, []);
+
+  const handleClick = async (categoryName) => {
+    console.log("category", categoryName);
+    if (!subCategories[categoryName]) {
+      const res = await ProductServices.fetchSubCategories(categoryName._id);
+      console.log("res", res.data);
+      updateSubCategories((prev) => ({
+        ...prev,
+        [categoryName.name]: res.data,
+      }));
+      console.log("sub", subCategories);
+    }
+  };
+
   function capitalizeFirstLetter(str) {
-  if (typeof str !== 'string' || str.length === 0) {
-    return str; // Return as is for non-string or empty inputs
+    if (typeof str !== "string" || str.length === 0) {
+      return str; // Return as is for non-string or empty inputs
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
   return (
     <div>
       <nav className="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -30,9 +45,14 @@ export default function Menu() {
           <div className="collapse navbar-collapse" id="collapsibleNavbar">
             <ul className="navbar-nav">
               {category.map((obj) => {
-
                 return (
-                  <li className="nav-item dropdown">
+                  <li
+                    key={obj._id}
+                    className="nav-item dropdown"
+                    onClick={() => {
+                      handleClick(obj);
+                    }}
+                  >
                     <Link
                       className="nav-link dropdown-toggle"
                       role="button"
@@ -41,13 +61,19 @@ export default function Menu() {
                       {capitalizeFirstLetter(obj.name)}
                     </Link>
                     <ul className="dropdown-menu">
-                     
-                      <li>
-                        <Link className="dropdown-item" to="subcat">
-                          Sub category
-                        </Link>
-                      </li>
-                      
+                      {subCategories[obj.name]?.length ? (
+                        subCategories[obj.name].map((sub) => (
+                          <li key={sub._id}>
+                            <Link className="dropdown-item" to="subcat">
+                              {sub.name}
+                            </Link>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="dropdown-item text-muted">
+                          no sub categories
+                        </li>
+                      )}
                     </ul>
                   </li>
                 );
