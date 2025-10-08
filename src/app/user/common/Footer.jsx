@@ -50,7 +50,7 @@ export default function Footer() {
       </div>
       <hr />
       <div className="d-flex align-items-center justify-content-center gap-3">
-        <i class="fa fa-opencart fa-2x" style={{ color: "white" }}></i>
+        <i className="fa fa-opencart fa-2x" style={{ color: "white" }}></i>
         <select name="" id="" className="bg-dark text-white border-none">
           <option value="english">English</option>
           <option value="arabic">Arabic</option>
