@@ -1,34 +1,58 @@
-import React from "react";
+import { Link } from "react-router-dom";
+import user from "../../assits/banner1.jpg";
 import "./common.scss";
 export default function Header() {
   return (
-    <div className="navbar navbar-expand-sm navbar-dark bg-dark d-flex justify-content-between align-items-center ">
-      <div class="container-fluid">
+    <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
+      <div class="container-fluid d-flex justify-content-between align-items-center">
+        <i className="fa fa-opencart fa-lg" style={{ color: "white" }}></i>
+
         <button
-          className="navbar-toggler"
+          class="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#collapsibleNavbar"
+          data-bs-target="#mynavbar"
         >
-          <span className="navbar-toggler-icon"></span>
+          <span class="navbar-toggler-icon"></span>
         </button>
-        <i className="fa fa-opencart fa-lg" style={{ color: "white" }}></i>
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
-          <div
-            className="d-flex align-items-center justify-content-center bg-white px-2 rounded "
-            id="collapsibleNavbar"
-          >
+        <div className="collapse navbar-collapse " id="mynavbar">
+          <ul className="navbar-nav d-flex flex-row gap-4 mx-auto">
+            <li className="nav-item">
+              <a className="nav-link" href="#">
+                Home
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#">
+                Contacts
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#">
+                About
+              </a>
+            </li>
+          </ul>
+          <form className="d-flex gap-2">
             <input
+              className="form-control me-2"
               type="text"
-              className="header__search mb-2 "
-              style={{ border: "none" }}
-              placeholder="Search..."
+              placeholder="Search"
             />
-            <i className="fa fa-search fa-2x" style={{ color: "gray" }}></i>
-          </div>
-          <i className="fa fa-user-circle fa-2x" style={{ color: "white" }}></i>
+            <button className="btn btn-primary" type="button">
+              Search
+            </button>
+            <a className="navbar-brand" href="#">
+              <img
+                src={user}
+                alt="user"
+                style={{ width: "40px", height: "40px", borderRadius: "100%" }}
+                className="rounded-pill"
+              />
+            </a>
+          </form>
         </div>
       </div>
-    </div>
+    </nav>
   );
 }
