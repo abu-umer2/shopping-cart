@@ -1,19 +1,18 @@
-import { Link } from "react-router-dom";
 import user from "../../assits/banner1.jpg";
 import "./common.scss";
 export default function Header() {
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
-      <div class="container-fluid d-flex justify-content-between align-items-center">
+      <div className="container-fluid d-flex justify-content-between align-items-center">
         <i className="fa fa-opencart fa-lg" style={{ color: "white" }}></i>
 
         <button
-          class="navbar-toggler"
+          className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#mynavbar"
         >
-          <span class="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse " id="mynavbar">
           <ul className="navbar-nav d-flex flex-row gap-4 mx-auto">

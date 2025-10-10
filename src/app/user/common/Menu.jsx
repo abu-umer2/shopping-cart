@@ -8,25 +8,13 @@ export default function Menu() {
     ProductServices.fetchCategories().then((data) => {
       console.log(data.data);
       updateCat(data.data);
+      console.log("cateiesqq", data.data);
     });
   }, []);
 
-  const handleClick = async (categoryName) => {
-    console.log("category", categoryName);
-    if (!subCategories[categoryName]) {
-      const res = await ProductServices.fetchSubCategories(categoryName._id);
-      console.log("res", res.data);
-      updateSubCategories((prev) => ({
-        ...prev,
-        [categoryName.name]: res.data,
-      }));
-      console.log("sub", subCategories);
-    }
-  };
-
   function capitalizeFirstLetter(str) {
     if (typeof str !== "string" || str.length === 0) {
-      return str; // Return as is for non-string or empty inputs
+      return str;
     }
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
@@ -46,13 +34,7 @@ export default function Menu() {
             <ul className="navbar-nav">
               {category.map((obj) => {
                 return (
-                  <li
-                    key={obj._id}
-                    className="nav-item dropdown"
-                    onClick={() => {
-                      handleClick(obj);
-                    }}
-                  >
+                  <li key={obj._id} className="nav-item dropdown">
                     <Link
                       className="nav-link dropdown-toggle"
                       role="button"
@@ -61,19 +43,13 @@ export default function Menu() {
                       {capitalizeFirstLetter(obj.name)}
                     </Link>
                     <ul className="dropdown-menu">
-                      {subCategories[obj.name]?.length ? (
-                        subCategories[obj.name].map((sub) => (
-                          <li key={sub._id}>
-                            <Link className="dropdown-item" to="subcat">
-                              {sub.name}
-                            </Link>
-                          </li>
-                        ))
-                      ) : (
-                        <li className="dropdown-item text-muted">
-                          no sub categories
+                      {obj.subCategories.map((sub) => (
+                        <li key={sub._id}>
+                          <Link className="dropdown-item" to="subcat">
+                            {capitalizeFirstLetter(sub.name)}
+                          </Link>
                         </li>
-                      )}
+                      ))}
                     </ul>
                   </li>
                 );
