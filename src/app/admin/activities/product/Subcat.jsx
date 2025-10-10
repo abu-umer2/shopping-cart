@@ -1,33 +1,67 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "../../../shared/controls/Input";
 import Button from "../../../shared/controls/Button";
-import axios from "axios";
+import AuthServices from "../../services/auth";
+import Modal from "bootstrap/js/dist/modal";
 
 export default function Subcat() {
   const [subCat, setSunCat] = useState("");
-  // const [isActive, setIsActive] = useState(true);
   const [categoryId, setCategoryId] = useState("");
-
   const [catigories, setCatigories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/categories")
-      .then((response) => setCatigories(response.data));
-  }, []);
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/sub-categories")
-      .then((response) => setSubCategories(response.data));
+    try {
+      AuthServices.fetchCategories().then((dt) => setCatigories(dt.data));
+      AuthServices.fetchAllSubCategories().then((dt) =>
+        setSubCategories(dt.data)
+      );
+    } catch (error) {
+      console.error("Error fetching:", error);
+    }
   }, []);
 
-  const onSubmit = async () => {
-    console.log("sub", subCat);
-    await axios.post("http://localhost:3000/sub-categories", {
-      name: subCat,
-      categoryId,
-    });
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("sub", subCat);
+      await AuthServices.createSubCategory({ name: subCat, categoryId });
+
+      const dt = await AuthServices.fetchAllSubCategories();
+      setSubCategories(dt.data);
+
+      const modalEl = document.getElementById("myModal");
+      let modal = Modal.getInstance(modalEl);
+      if (!modal) {
+        modal = new Modal(modalEl);
+      }
+      modal.hide();
+
+      setSunCat("");
+      setCategoryId("");
+    } catch (err) {
+      console.error("Error creating subcategory:", err);
+    }
+  };
+
+  function displayModal() {
+    const myModalElement = document.getElementById("myModal");
+    if (myModalElement) {
+      let myModal = Modal.getInstance(myModalElement);
+      if (!myModal) {
+        myModal = new Modal(myModalElement);
+      }
+      myModal.show();
+    }
+  }
+  const closeModal = () => {
+    const myModalElement = document.getElementById("myModal");
+    if (myModalElement) {
+      const modal = Modal.getInstance(myModalElement);
+      if (modal) {
+        modal.hide();
+      }
+    }
   };
   return (
     <div className="d-flex flex-column justify-content-center items-center">
@@ -41,7 +75,7 @@ export default function Subcat() {
         </thead>
         <tbody>
           {subCategories.map((sub) => (
-            <tr>
+            <tr key={sub._id}>
               <td>{sub._id}</td>
               <td>{sub.name}</td>
               <td>{sub.categoryId}</td>
@@ -51,14 +85,16 @@ export default function Subcat() {
       </table>
 
       <div className="d-flex justify-content-center">
-        <button
+        <Button
           type="button"
-          class="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#myModal"
+          size="small"
+          className=""
+          onClick={() => {
+            displayModal();
+          }}
         >
           Add SubCategory
-        </button>
+        </Button>
       </div>
       <div className="modal" id="myModal">
         <div className="modal-dialog modal-lg">
@@ -69,6 +105,7 @@ export default function Subcat() {
               <form
                 className="d-flex flex-column m-5 p-5 gap-3"
                 style={{ width: "500px" }}
+                onSubmit={onSubmit}
               >
                 <div className="d-flex flex-column gap-2 align-items-start ">
                   <label className="">Enter Sub category name</label>
@@ -104,7 +141,6 @@ export default function Subcat() {
                   variant="primary"
                   size="medium"
                   className="btn px-5"
-                  onClick={onSubmit}
                 >
                   ADD SUB
                 </Button>
@@ -112,15 +148,18 @@ export default function Subcat() {
             </div>
 
             <div className="d-flex justify-content-center">
-              <button
+              <Button
                 type="button"
-                class="btn btn-danger"
+                className="px-5"
                 data-bs-dismiss="modal"
-                className="btn btn-primary mb-2 "
-                style={{ width: "100px" }}
+                size="small"
+                variant="close"
+                onClick={() => {
+                  closeModal();
+                }}
               >
                 Close
-              </button>
+              </Button>
             </div>
           </div>
         </div>

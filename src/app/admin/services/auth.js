@@ -20,6 +20,18 @@ const AuthServices = {
       `http://${dbserver.server}:${dbserver.port}/sub-categories/subs/${category}`
     );
   },
+  fetchAllSubCategories() {
+    return axios.get(
+      `http://${dbserver.server}:${dbserver.port}/sub-categories`
+    );
+  },
+  createSubCategory({ name, categoryId }) {
+    const payload = { name, categoryId };
+    return axios.post(
+      `http://${dbserver.server}:${dbserver.port}/sub-categories`,
+      payload
+    );
+  },
 
   createProduct(formData) {
     const payload = formData;
@@ -28,6 +40,7 @@ const AuthServices = {
       payload
     );
   },
+
   updateProduct(selectedProductId, formData) {
     const payload = formData;
     return axios.patch(
