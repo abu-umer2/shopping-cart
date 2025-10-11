@@ -43,13 +43,15 @@ export default function Menu() {
                       {capitalizeFirstLetter(obj.name)}
                     </Link>
                     <ul className="dropdown-menu">
-                      {obj.subCategories.map((sub) => (
-                        <li key={sub._id}>
-                          <Link className="dropdown-item" to="subcat">
+                      {obj.subCategories.map((sub) => {
+                        const product_path="productsList/"+sub._id
+                        return (<li key={sub._id}>
+                          <Link className="dropdown-item" to={product_path}>
                             {capitalizeFirstLetter(sub.name)}
                           </Link>
                         </li>
-                      ))}
+                        )
+                      })}
                     </ul>
                   </li>
                 );
