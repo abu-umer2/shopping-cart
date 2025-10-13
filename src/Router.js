@@ -28,9 +28,9 @@ export default function Router() {
           <Route path="product" element={<Product />} />
           <Route path="logout" element={<Logout />} />
         </Route>
-        <Route path="user" element={<UserLanding />} >
-         <Route path="" element={<Landing />} />
-         <Route path="productsList/:pid" element={<ProductsList />} />
+        <Route path="user" element={<UserLanding />}>
+          <Route path="" element={<Landing />} />
+          <Route path="productsList/:subId" element={<ProductsList />} />
         </Route>
         <Route path="*" element={<Pagenotfound />} />
       </Routes>

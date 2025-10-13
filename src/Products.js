@@ -1,26 +1,35 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import ProductServices from "./app/services/productServices";
+import ProductCard from "./app/ProductCard";
 
 export default function Products() {
-    let params=useParams()
-    let data=[
-        {pid:1001,pname:"Samsung",price:10000,img:"img2.jpg"},
-        {pid:1001,pname:"Samsung",price:10000,img:"img2.jpg"}
-    ]
+  const [products, setProducts] = useState([]);
+  const { subId } = useParams();
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await ProductServices.fetchProductsBySub(subId);
+        setProducts(res.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    if (subId) fetchProducts();
+  }, [subId]);
   return (
-    <div class="container">
-      <div style={{display:'flex',flexWrap:'wrap'}}>
-        {data.map((obj)=>{
-           return <div style={{marginRight:'10px'}}> 
-            <h3>{obj.pname}</h3>
-            <img src={obj.img} width="150px" height="150px"/>
-            <div>{obj.price}</div>
-            <button class="btn btn-primary">
-                More Info
-            </button>
+    <div className="container mt-4 ">
+      <div className="row" style={{ display: "flex", flexWrap: "wrap" }}>
+        {products.map((product) => {
+          return (
+            <div key={product._id} className="col-md-3 mb-4">
+              <ProductCard key={product._id} product={product} />
             </div>
+          );
         })}
       </div>
     </div>
-  )
+  );
 }
