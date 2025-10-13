@@ -1,9 +1,13 @@
-import dbserver from "./../dbserver"
+import dbserver from "./../dbserver";
 import axios from "axios";
 const ProductServices = {
-  
   fetchProducts() {
     return axios.get(`http://${dbserver.server}:${dbserver.port}/products`);
+  },
+  fetchProductsBySub(subId) {
+    return axios.get(
+      `http://${dbserver.server}:${dbserver.port}/products/sub/${subId}`
+    );
   },
   fetchCategories() {
     return axios.get(`http://${dbserver.server}:${dbserver.port}/categories`);

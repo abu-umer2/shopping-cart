@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import ProductServices from "../../services/productServices";
 export default function Menu() {
   var [category, updateCat] = useState([]);
-  var [subCategories, updateSubCategories] = useState([]);
   useEffect(() => {
     ProductServices.fetchCategories().then((data) => {
       console.log(data.data);
@@ -44,13 +43,14 @@ export default function Menu() {
                     </Link>
                     <ul className="dropdown-menu">
                       {obj.subCategories.map((sub) => {
-                        const product_path="productsList/"+sub._id
-                        return (<li key={sub._id}>
-                          <Link className="dropdown-item" to={product_path}>
-                            {capitalizeFirstLetter(sub.name)}
-                          </Link>
-                        </li>
-                        )
+                        const product_path = "productsList/" + sub._id;
+                        return (
+                          <li key={sub._id}>
+                            <Link className="dropdown-item" to={product_path}>
+                              {capitalizeFirstLetter(sub.name)}
+                            </Link>
+                          </li>
+                        );
                       })}
                     </ul>
                   </li>
