@@ -20,6 +20,13 @@ const AuthServices = {
       `http://${dbserver.server}:${dbserver.port}/sub-categories/subs/${category}`
     );
   },
+  createCategory({ name }) {
+    const payload = { name };
+    return axios.post(
+      `http://${dbserver.server}:${dbserver.port}/categories`,
+      payload
+    );
+  },
   fetchAllSubCategories() {
     return axios.get(
       `http://${dbserver.server}:${dbserver.port}/sub-categories`

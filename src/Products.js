@@ -12,6 +12,7 @@ export default function Products() {
       try {
         const res = await ProductServices.fetchProductsBySub(subId);
         setProducts(res.data);
+        console.log(res.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
