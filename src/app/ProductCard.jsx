@@ -34,9 +34,6 @@ const ProductCard = ({ product }) => {
           >
             More Info
           </Button>
-          <Button className=" w-100 " variant="green" size="small">
-            Add to Cart
-          </Button>
         </div>
       </div>
     </div>
