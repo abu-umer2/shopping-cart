@@ -10,7 +10,7 @@ const ProductCard = ({ product }) => {
           src={product.image}
           alt={product.name}
           width="150px"
-          height="150px"
+          height="200px"
         />
       )}
       <div className="card-body">
