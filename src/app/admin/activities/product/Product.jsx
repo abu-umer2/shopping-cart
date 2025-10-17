@@ -18,6 +18,7 @@ const Product = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [edit, setEdit] = useState(false);
   const [stock, setStock] = useState("");
+  const [productType, setProductType] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const [size, setSize] = useState("");
@@ -124,6 +125,7 @@ const Product = () => {
       formData.append("review", review);
       formData.append("categoriesId", category);
       formData.append("stock", stock);
+      formData.append("productType", productType);
 
       formData.append("size", size);
       formData.append("color", color);
@@ -145,6 +147,8 @@ const Product = () => {
           closeModal();
           alert("Product updated successfully!");
         } else {
+          console.log("for", formData);
+
           await AuthServices.createProduct(formData);
 
           alert("Product added successfully!");
@@ -172,6 +176,7 @@ const Product = () => {
     setColor("");
     setSize("");
     setStock("");
+    setProductType("");
     setErrors({});
   };
   function loadUpdates(pro) {
@@ -184,6 +189,7 @@ const Product = () => {
     setCategory(pro?.categoriesId?._id || "");
     setSubCategory(pro?.subCategoriesId?._id || "");
     setStock(pro?.stock || "");
+    setProductType(pro?.productType || "");
     setSize(pro?.size || "");
     setColor(pro?.color || "");
     setImagePreview(pro?.image || null);
@@ -301,7 +307,25 @@ const Product = () => {
                         <p className="text-danger">{errors.size}</p>
                       )}
                     </div>
-
+                    <div className="d-flex align-items-center justify-content-between">
+                      <label>Product status:</label>
+                      <select
+                        className="form-select"
+                        value={productType}
+                        onChange={(e) => setProductType(e.target.value)}
+                        style={{ width: "250px" }}
+                      >
+                        <option value="">Select Type</option>
+                        <option value="available">Available</option>
+                        <option value="best_selling">Best selling</option>
+                        <option value="upcoming"> Up Coming</option>
+                      </select>
+                    </div>
+                    <div className="error-message">
+                      {errors.subCategory && (
+                        <p className="text-danger">{errors.subCategory}</p>
+                      )}
+                    </div>
                     <div className="d-flex align-items-center  justify-content-between">
                       <label>Description:</label>
                       <textarea
