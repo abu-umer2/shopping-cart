@@ -9,6 +9,7 @@ const ProductsTable = ({ products, updateMethod, setEdit }) => {
             <th>Product Category</th>
             <th>Product Sub-category</th>
             <th>Product Price</th>
+            <th>Product Status</th>
 
             <th>Product Action</th>
           </tr>
@@ -21,6 +22,7 @@ const ProductsTable = ({ products, updateMethod, setEdit }) => {
               <td>{product.categoriesId.name}</td>
               <td>{product.subCategoriesId.name}</td>
               <td>{product.price}</td>
+              <td>{product.productType}</td>
 
               <td>
                 <div className="d-flex gap-2">
@@ -34,7 +36,6 @@ const ProductsTable = ({ products, updateMethod, setEdit }) => {
                   >
                     Update
                   </Button>
-
                 </div>
               </td>
             </tr>
