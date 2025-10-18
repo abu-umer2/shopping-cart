@@ -1,16 +1,30 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "./shared/controls/Button";
-
+import CommomUtils from "./user/common/utils";
+import { useState } from "react";
+import Login from "./user/components/Login"
 const ProductDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const [isLogin,updateIsLogin] = useState(false)
   const { product } = location.state || {};
   const handleBack = () => {
     navigate(-1);
   };
+  function addToCart(productInfo){
+    if(sessionStorage.getItem("auth")){
+
+    }
+    else{
+    //CommomUtils.ShowDialog();
+    updateIsLogin(true)
+    }
+  }
   return (
     <div className="container row m-3 border border-2 rounded ">
+      {isLogin && (<div>
+        <CommomUtils.ShowDialog childComponent={<Login></Login>} />
+      </div>)}
       <div className="col-md-6 col-sm-12 p-3">
         <img
           src={product?.image}
@@ -42,7 +56,7 @@ const ProductDetails = () => {
         </p>
 
         <div className="mt-3 d-flex gap-3">
-          <Button className=" w-50" size="small">
+          <Button className=" w-50" size="small" onClick={()=>addToCart(product)}>
             Add to Cart
           </Button>
           <button className="btn btn-secondary w-50" onClick={handleBack}>
