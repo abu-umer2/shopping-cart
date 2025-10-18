@@ -41,23 +41,6 @@ export default function Header() {
           id="mynavbar"
         >
           <div className="navbar-nav d-flex  gap-4 mx-auto items-center align-items-center">
-            <ul className=" navbar-nav  gap-4 mx-auto">
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  Home
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  Contacts
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  About
-                </a>
-              </li>
-            </ul>
             <form className="d-flex">
               <div className="d-flex bg-white rounded">
                 <input

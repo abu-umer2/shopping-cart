@@ -10,6 +10,7 @@ import AdminLanding from "./app/admin/AdminLandingPage";
 import Landing from "./app/user/components/Landing";
 import ProductsList from "./Products";
 import ProductDetails from "./app/ProductDetails";
+import Login from "./app/user/components/Login";
 export default function Router() {
   return (
     <BrowserRouter>
@@ -33,6 +34,7 @@ export default function Router() {
           <Route path="" element={<Landing />} />
           <Route path="productsList/:subId" element={<ProductsList />} />
           <Route path="productDetails" element={<ProductDetails />} />
+          <Route path="login" element={<Login />} />
         </Route>
         <Route path="*" element={<Pagenotfound />} />
       </Routes>
