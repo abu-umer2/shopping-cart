@@ -12,31 +12,35 @@ const Login = () => {
       >
         {newUser ? (
           <div className="d-flex justify-content-between ">
-            <label htmlFor="">First Name:</label> <Input />
+            <label htmlFor="">First Name:</label>{" "}
+            <Input placeholder="Enter Your first name" />
           </div>
         ) : (
           ""
         )}
         {newUser ? (
           <div className="d-flex justify-content-between ">
-            <label htmlFor="">Last Name:</label> <Input />
+            <label htmlFor="">Last Name:</label>{" "}
+            <Input placeholder="Enter Your last name" />
           </div>
         ) : (
           ""
         )}
         {newUser ? (
           <div className="d-flex justify-content-between ">
-            <label htmlFor="">Email:</label> <Input />
+            <label htmlFor="">Email:</label>{" "}
+            <Input placeholder="Enter Your email" />
           </div>
         ) : (
           ""
         )}
         <div className="d-flex justify-content-between ">
-          <label htmlFor="">Username:</label> <Input />
+          <label htmlFor="">Username:</label>{" "}
+          <Input placeholder="Enter Your username" />
         </div>
         <div className="d-flex justify-content-between ">
           <label htmlFor="">Password:</label>
-          <Input />
+          <Input placeholder="Enter your Password" />
         </div>
 
         {newUser ? (
