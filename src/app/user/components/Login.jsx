@@ -8,7 +8,7 @@ const Login = () => {
     <div className="d-flex justify-content-center align-items-center">
       <div
         className=" d-flex flex-column m-5 p-5 p3 gap-4 border  border-2 rounded"
-        style={{ width: "500px" }}
+        style={{ width: "500px",backgroundColor:'white' }}
       >
         {newUser ? (
           <div className="d-flex justify-content-between ">
