@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Input from "../../shared/controls/Input";
 import Button from "../../shared/controls/Button";
-import ProductServices from "../services/productServices";
 import { useNavigate } from "react-router-dom";
+import ProductServices from "../../services/productServices";
 
 const Login = () => {
   const [newUser, setNewUser] = useState(false);

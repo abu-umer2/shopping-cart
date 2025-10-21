@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import ProductServices from "../services/productServices";
+import ProductServices from "../../services/productServices";
 
 const BestSelling = () => {
   const [bestSelling, setBestSelling] = useState([]);

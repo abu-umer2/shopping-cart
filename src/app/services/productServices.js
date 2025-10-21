@@ -1,5 +1,5 @@
-import dbserver from "../../dbserver";
 import axios from "axios";
+import dbserver from "../dbserver";
 const ProductServices = {
   fetchProducts() {
     return axios.get(`http://${dbserver.server}:${dbserver.port}/products`);
