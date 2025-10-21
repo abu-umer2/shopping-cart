@@ -1,9 +1,16 @@
 import { useState } from "react";
-import user from "../../assits/banner1.jpg";
+import userImg from "../../assits/banner1.jpg";
 import "./common.scss";
+import CommomUtils from "../common/utils";
+import Login from "../components/Login";
+import SignUp from "../components/SignUp";
 export default function Header() {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isLogin, updateIsLogin] = useState(false);
+  const [isSignup, updateIsSignup] = useState(false);
 
+  const user = localStorage.getItem("adminAuth");
+  console.log("user", user);
   const handleToggle = (e) => {
     const expanded = e.currentTarget.getAttribute("aria-expanded") === "true";
     setIsExpanded(expanded);
@@ -11,6 +18,16 @@ export default function Header() {
 
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
+      {isLogin && (
+        <div>
+          <CommomUtils.ShowDialog childComponent={<Login></Login>} />
+        </div>
+      )}
+      {isSignup && (
+        <div>
+          <CommomUtils.ShowDialog childComponent={<SignUp></SignUp>} />
+        </div>
+      )}
       <div className="container-fluid d-flex justify-content-between align-items-center">
         <button
           className="navbar-toggler"
@@ -58,26 +75,62 @@ export default function Header() {
             </form>
           </div>
         </div>
-        <div
-          style={
-            isExpanded
-              ? {
-                  position: "absolute",
-                  right: "0",
-                  top: "30px",
-                  transform: "translateY(-50%)",
-                }
-              : {}
-          }
-        >
-          <a className="navbar-brand m-0 p-0 sm-ml-5" href="#">
-            <img
-              src={user}
-              alt="user"
-              style={{ width: "40px", height: "40px", borderRadius: "50%" }}
-            />
-          </a>
-        </div>
+        {user ? (
+          <div
+            class="dropdown"
+            style={
+              isExpanded
+                ? {
+                    position: "absolute",
+                    right: "0",
+                    top: "30px",
+                    transform: "translateY(-50%)",
+                  }
+                : {}
+            }
+          >
+            <a className="navbar-brand m-0 p-0 sm-ml-5" href="#">
+              <img
+                src={userImg}
+                alt="user"
+                style={{ width: "40px", height: "40px", borderRadius: "50%" }}
+              />
+            </a>
+          </div>
+        ) : (
+          <div className="dropdown">
+            <button
+              size="small"
+              className="btn btn-secondary dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style={{ backgroundColor: "#0E3C53", border: "none" }}
+            >
+              Login
+            </button>
+            <ul className="dropdown-menu dropdown-menu-end p-5 text-center ">
+              <li>
+                <a
+                  className="dropdown-item border border-2 rounded rounded-3 ps-3 py-1 my-2"
+                  onClick={() => updateIsLogin(true)}
+                >
+                  Login
+                </a>
+              </li>
+              <p>Don't have an account?</p>
+              <li>
+                <a
+                  className="dropdown-item border border-2 text-white rounded rounded-3 ps-3  my-2"
+                  onClick={() => updateIsSignup(true)}
+                  style={{ backgroundColor: "#0E3C53", border: "none" }}
+                >
+                  Create An account
+                </a>
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
     </nav>
   );

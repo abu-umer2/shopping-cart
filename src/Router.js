@@ -11,6 +11,7 @@ import Landing from "./app/user/components/Landing";
 import ProductsList from "./Products";
 import ProductDetails from "./app/ProductDetails";
 import Login from "./app/user/components/Login";
+import SignUp from "./app/user/components/SignUp";
 export default function Router() {
   return (
     <BrowserRouter>
@@ -35,6 +36,7 @@ export default function Router() {
           <Route path="productsList/:subId" element={<ProductsList />} />
           <Route path="productDetails" element={<ProductDetails />} />
           <Route path="login" element={<Login />} />
+          <Route path="siginup" element={<SignUp />} />
         </Route>
         <Route path="*" element={<Pagenotfound />} />
       </Routes>

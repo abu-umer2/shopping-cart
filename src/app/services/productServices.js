@@ -1,4 +1,4 @@
-import dbserver from "./../dbserver";
+import dbserver from "../../dbserver";
 import axios from "axios";
 const ProductServices = {
   fetchProducts() {
@@ -29,6 +29,14 @@ const ProductServices = {
     const payload = formData;
     return axios.patch(
       `http://${dbserver.server}:${dbserver.port}/products/${selectedProductId}`,
+      payload
+    );
+  },
+  userLogin(username, password) {
+    const payload = { username, password };
+    console.log("log", payload);
+    return axios.post(
+      `http://${dbserver.server}:${dbserver.port}/auth/login`,
       payload
     );
   },
