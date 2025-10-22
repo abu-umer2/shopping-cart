@@ -1,6 +1,7 @@
 import { useState } from "react";
 import userImg from "../../assits/banner1.jpg";
 import "./common.scss";
+import Button from "../../shared/controls/Button";
 import CommomUtils from "../common/utils";
 import Login from "../components/Login";
 import SignUp from "../components/SignUp";
@@ -20,14 +21,12 @@ export default function Header() {
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
       {isLogin && (
         <div>
-          <CommomUtils.ShowDialog childComponent={<Login></Login>} />
+          <CommomUtils.ShowDialog
+            childComponent={<Login updateIsLogin={updateIsLogin}></Login>}
+          />
         </div>
       )}
-      {isSignup && (
-        <div>
-          <CommomUtils.ShowDialog childComponent={<SignUp></SignUp>} />
-        </div>
-      )}
+
       <div className="container-fluid d-flex justify-content-between align-items-center">
         <button
           className="navbar-toggler"
@@ -99,36 +98,14 @@ export default function Header() {
           </div>
         ) : (
           <div className="dropdown">
-            <button
+            <Button
               size="small"
-              className="btn btn-secondary dropdown-toggle"
+              className="btn btn-secondary "
               type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              style={{ backgroundColor: "#0E3C53", border: "none" }}
+              onClick={() => updateIsLogin(true)}
             >
               Login
-            </button>
-            <ul className="dropdown-menu dropdown-menu-end p-5 text-center ">
-              <li>
-                <a
-                  className="dropdown-item border border-2 rounded rounded-3 ps-3 py-1 my-2"
-                  onClick={() => updateIsLogin(true)}
-                >
-                  Login
-                </a>
-              </li>
-              <p>Don't have an account?</p>
-              <li>
-                <a
-                  className="dropdown-item border border-2 text-white rounded rounded-3 ps-3  my-2"
-                  onClick={() => updateIsSignup(true)}
-                  style={{ backgroundColor: "#0E3C53", border: "none" }}
-                >
-                  Create An account
-                </a>
-              </li>
-            </ul>
+            </Button>
           </div>
         )}
       </div>

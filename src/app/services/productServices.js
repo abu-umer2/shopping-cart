@@ -40,6 +40,13 @@ const ProductServices = {
       payload
     );
   },
+  userSignup(payload) {
+    console.log("log", payload);
+    return axios.post(
+      `http://${dbserver.server}:${dbserver.port}/auth/signup`,
+      payload
+    );
+  },
 };
 
 export default ProductServices;

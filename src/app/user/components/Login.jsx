@@ -4,7 +4,7 @@ import Button from "../../shared/controls/Button";
 import { useNavigate } from "react-router-dom";
 import ProductServices from "../../services/productServices";
 
-const Login = () => {
+const Login = ({ updateIsLogin }) => {
   const [newUser, setNewUser] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -32,9 +32,12 @@ const Login = () => {
         style={{ width: "500px", backgroundColor: "white" }}
         onSubmit={onSubmit}
       >
-        <div className="d-flex justify-content-between ">
-          <label htmlFor="">Username:</label>{" "}
+        <p className="fs-4 fw-semibold text-center">Sign In</p>
+
+        <div className="">
+          <label htmlFor="">Username:</label>
           <Input
+            className="form-control"
             placeholder="Enter Your username"
             name={username}
             onChange={(e) => {
@@ -42,9 +45,10 @@ const Login = () => {
             }}
           />
         </div>
-        <div className="d-flex justify-content-between ">
+        <div className="">
           <label htmlFor="">Password:</label>
           <Input
+            className="form-control"
             placeholder="Enter your Password"
             name={password}
             onChange={(e) => {
@@ -56,15 +60,17 @@ const Login = () => {
         <Button size="small" type="submit">
           Login
         </Button>
-        {newUser ? (
-          <p onClick={() => setNewUser(false)}>
-            I have an account <span className="text-primary">Login</span>
+        <div className=" text-center">
+          <p
+            onClick={() => {
+              navigate("./siginup");
+              updateIsLogin(false);
+            }}
+          >
+            I'm A new User{" "}
+            <span className="text-primary pointer">Register</span>
           </p>
-        ) : (
-          <p onClick={() => setNewUser(true)}>
-            I'm A new User <span className="text-primary">Register</span>
-          </p>
-        )}
+        </div>
       </form>
     </div>
   );
