@@ -8,7 +8,6 @@ import SignUp from "../components/SignUp";
 export default function Header() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLogin, updateIsLogin] = useState(false);
-  const [isSignup, updateIsSignup] = useState(false);
 
   const user = localStorage.getItem("adminAuth");
   console.log("user", user);
@@ -100,9 +99,10 @@ export default function Header() {
           <div className="dropdown">
             <Button
               size="small"
-              className="btn btn-secondary "
+              className="btn btn-secondary border-0 px-2"
               type="button"
               onClick={() => updateIsLogin(true)}
+              s
             >
               Login
             </Button>

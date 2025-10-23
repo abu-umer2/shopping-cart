@@ -180,7 +180,12 @@ const SignUp = () => {
           <Button className="border-0 col-md-5" size="small" type="submit">
             Sign Up
           </Button>
-          <Button className="border-0 col-md-5" size="small " variant="close">
+          <Button
+            className="border-0 col-md-5"
+            size="small "
+            variant="close"
+            onClick={() => navigate(-1)}
+          >
             Close
           </Button>
         </div>
