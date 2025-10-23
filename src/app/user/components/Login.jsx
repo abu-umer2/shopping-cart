@@ -12,7 +12,7 @@ const Login = ({ updateIsLogin }) => {
     e.preventDefault();
     try {
       await ProductServices.userLogin(username, password);
-      localStorage.setItem("userAuth", 1);
+      sessionStorage.setItem("userAuth", 1);
       navigate("../");
     } catch (error) {
       console.error(error);

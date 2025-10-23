@@ -12,8 +12,8 @@ const ProductDetails = () => {
     navigate(-1);
   };
   function addToCart(productInfo){
-    if(sessionStorage.getItem("auth")){
-
+    if(sessionStorage.getItem("userAuth")){
+      alert("Selected")
     }
     else{
     //CommomUtils.ShowDialog();
