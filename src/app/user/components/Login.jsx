@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import ProductServices from "../../services/productServices";
 
 const Login = ({ updateIsLogin }) => {
-  const [newUser, setNewUser] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -37,6 +36,7 @@ const Login = ({ updateIsLogin }) => {
         <div className="">
           <label htmlFor="">Username:</label>
           <Input
+            type="text"
             className="form-control"
             placeholder="Enter Your username"
             name={username}
@@ -48,6 +48,7 @@ const Login = ({ updateIsLogin }) => {
         <div className="">
           <label htmlFor="">Password:</label>
           <Input
+            type="password"
             className="form-control"
             placeholder="Enter your Password"
             name={password}
