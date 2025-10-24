@@ -4,12 +4,13 @@ import "./common.scss";
 import Button from "../../shared/controls/Button";
 import CommomUtils from "../common/utils";
 import Login from "../components/Login";
-import SignUp from "../components/SignUp";
 export default function Header() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLogin, updateIsLogin] = useState(false);
+  const [isOpen, updateIsOpen] = useState(false);
 
-  const user = localStorage.getItem("adminAuth");
+  const admin = sessionStorage.getItem("adminAuth");
+  const user = sessionStorage.getItem("userAuth");
   console.log("user", user);
   const handleToggle = (e) => {
     const expanded = e.currentTarget.getAttribute("aria-expanded") === "true";
@@ -19,37 +20,13 @@ export default function Header() {
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
       {isLogin && (
-        <div>
-          <CommomUtils.ShowDialog
-            childComponent={<Login updateIsLogin={updateIsLogin}></Login>}
-          />
-        </div>
+        <CommomUtils.ShowDialog
+          childComponent={<Login updateIsLogin={updateIsLogin}></Login>}
+        />
       )}
 
       <div className="container-fluid d-flex justify-content-between align-items-center">
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#mynavbar"
-          aria-expanded={isExpanded}
-          onClick={handleToggle}
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <i
-          className="fa fa-opencart fa-lg text-white"
-          style={
-            isExpanded
-              ? {
-                  position: "absolute",
-                  right: "50%",
-                  top: "30px",
-                  transform: "translateY(-50%)",
-                }
-              : {}
-          }
-        ></i>
+        <i className="fa fa-opencart fa-lg text-white"></i>
 
         <div
           className="collapse navbar-collapse justify-content-center "
@@ -73,30 +50,48 @@ export default function Header() {
             </form>
           </div>
         </div>
-        {user ? (
-          <div
-            class="dropdown"
-            style={
-              isExpanded
-                ? {
-                    position: "absolute",
-                    right: "0",
-                    top: "30px",
-                    transform: "translateY(-50%)",
-                  }
-                : {}
-            }
-          >
-            <a className="navbar-brand m-0 p-0 sm-ml-5" href="#">
+        <div className="d-flex align-items-center position-relative">
+          {user || admin ? (
+            <div className="dropdown">
               <img
                 src={userImg}
                 alt="user"
-                style={{ width: "40px", height: "40px", borderRadius: "50%" }}
+                className="rounded-circle"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  cursor: "pointer",
+                  objectFit: "cover",
+                }}
+                onClick={() => updateIsOpen((prev) => !prev)}
               />
-            </a>
-          </div>
-        ) : (
-          <div className="dropdown">
+              {isOpen && (
+                <ul
+                  className="dropdown-menu show position-absolute end-0 mt-2 shadow rounded"
+                  style={{ minWidth: "150px" }}
+                >
+                  <li>
+                    <button className="dropdown-item">Profile</button>
+                  </li>
+                  <li>
+                    <button className="dropdown-item">Orders</button>
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item text-danger"
+                      onClick={() => {
+                        sessionStorage.clear();
+                        localStorage.clear();
+                        window.location.reload();
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </ul>
+              )}
+            </div>
+          ) : (
             <Button
               size="small"
               className="btn btn-secondary border-0 px-2"
@@ -106,8 +101,8 @@ export default function Header() {
             >
               Login
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </nav>
   );

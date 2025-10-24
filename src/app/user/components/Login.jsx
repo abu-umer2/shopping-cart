@@ -13,7 +13,8 @@ const Login = ({ updateIsLogin }) => {
     try {
       await ProductServices.userLogin(username, password);
       sessionStorage.setItem("userAuth", 1);
-      navigate("../");
+      navigate("../user");
+      updateIsLogin(false);
     } catch (error) {
       console.error(error);
 
