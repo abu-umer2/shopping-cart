@@ -8,7 +8,7 @@ export default function Footer() {
         Back To Top
       </div>
 
-      <div className="container row mt-5 p-5 mx-5 ">
+      <div className="container row mt-5 p-md-5 mx-5 ">
         <div className="col-md-3 col-sm-12 mb-4 ">
           <p className="fw-bold">Get to Know Us</p>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
