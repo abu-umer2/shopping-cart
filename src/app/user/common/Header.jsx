@@ -11,11 +11,16 @@ export default function Header() {
 
   const admin = sessionStorage.getItem("adminAuth");
   const user = sessionStorage.getItem("userAuth");
+  let localData=JSON.parse(localStorage.getItem("cartProducts"));
+  let [productCount,updateProductCount]=useState(0)
   console.log("user", user);
   const handleToggle = (e) => {
     const expanded = e.currentTarget.getAttribute("aria-expanded") === "true";
     setIsExpanded(expanded);
   };
+  setTimeout(()=>{
+    updateProductCount(localData? localData.length : 0)
+  },100)
 
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
@@ -50,21 +55,10 @@ export default function Header() {
             </form>
           </div>
         </div>
-        <div className="d-flex align-items-center position-relative">
+        <div className=" countDiv" onClick={() => updateIsOpen((prev) => !prev)}>
           {user || admin ? (
             <div className="dropdown">
-              <img
-                src={userImg}
-                alt="user"
-                className="rounded-circle"
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  cursor: "pointer",
-                  objectFit: "cover",
-                }}
-                onClick={() => updateIsOpen((prev) => !prev)}
-              />
+              {productCount}
               {isOpen && (
                 <ul
                   className="dropdown-menu show position-absolute end-0 mt-2 shadow rounded"
