@@ -4,22 +4,28 @@ import "./common.scss";
 import Button from "../../shared/controls/Button";
 import CommomUtils from "../common/utils";
 import Login from "../components/Login";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import store from "./../data/reducer";
+
 export default function Header() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLogin, updateIsLogin] = useState(false);
   const [isOpen, updateIsOpen] = useState(false);
+  const data = useSelector((state) => state.data);
+    const dispatch = useDispatch();
 
+  // alert(data)
   const admin = sessionStorage.getItem("adminAuth");
   const user = sessionStorage.getItem("userAuth");
-  let localData=JSON.parse(localStorage.getItem("cartProducts"));
-  let [productCount,updateProductCount]=useState(0)
+  let productCount=data;
+  // let [productCount,updateProductCount]=useState(0)
   console.log("user", user);
   const handleToggle = (e) => {
     const expanded = e.currentTarget.getAttribute("aria-expanded") === "true";
     setIsExpanded(expanded);
   };
   setTimeout(()=>{
-    updateProductCount(localData? localData.length : 0)
+  //  updateProductCount(localData? localData.length : 0)
   },100)
 
   return (
@@ -55,7 +61,10 @@ export default function Header() {
             </form>
           </div>
         </div>
-        <div className=" countDiv" onClick={() => updateIsOpen((prev) => !prev)}>
+        <div
+          className=" countDiv"
+          onClick={() => updateIsOpen((prev) => !prev)}
+        >
           {user || admin ? (
             <div className="dropdown">
               {productCount}
@@ -97,6 +106,14 @@ export default function Header() {
             </Button>
           )}
         </div>
+        {/* <button
+          onClick={() => {
+            const obj = { type: "Inc", payload: productCount };
+            dispatch(obj);
+          }}
+        >
+          Update
+        </button> */}
       </div>
     </nav>
   );
