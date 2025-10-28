@@ -4,18 +4,29 @@ import "./common.scss";
 import Button from "../../shared/controls/Button";
 import CommomUtils from "../common/utils";
 import Login from "../components/Login";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import store from "./../data/reducer";
+
 export default function Header() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLogin, updateIsLogin] = useState(false);
   const [isOpen, updateIsOpen] = useState(false);
+  const data = useSelector((state) => state.data);
+    const dispatch = useDispatch();
 
+  // alert(data)
   const admin = sessionStorage.getItem("adminAuth");
   const user = sessionStorage.getItem("userAuth");
+  let productCount=data;
+  // let [productCount,updateProductCount]=useState(0)
   console.log("user", user);
   const handleToggle = (e) => {
     const expanded = e.currentTarget.getAttribute("aria-expanded") === "true";
     setIsExpanded(expanded);
   };
+  setTimeout(()=>{
+  //  updateProductCount(localData? localData.length : 0)
+  },100)
 
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
@@ -50,21 +61,13 @@ export default function Header() {
             </form>
           </div>
         </div>
-        <div className="d-flex align-items-center position-relative">
+        <div
+          className=" countDiv"
+          onClick={() => updateIsOpen((prev) => !prev)}
+        >
           {user || admin ? (
             <div className="dropdown">
-              <img
-                src={userImg}
-                alt="user"
-                className="rounded-circle"
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  cursor: "pointer",
-                  objectFit: "cover",
-                }}
-                onClick={() => updateIsOpen((prev) => !prev)}
-              />
+              {productCount}
               {isOpen && (
                 <ul
                   className="dropdown-menu show position-absolute end-0 mt-2 shadow rounded"
@@ -103,6 +106,14 @@ export default function Header() {
             </Button>
           )}
         </div>
+        {/* <button
+          onClick={() => {
+            const obj = { type: "Inc", payload: productCount };
+            dispatch(obj);
+          }}
+        >
+          Update
+        </button> */}
       </div>
     </nav>
   );
