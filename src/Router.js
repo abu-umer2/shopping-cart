@@ -9,9 +9,9 @@ import Logout from "./app/admin/Logout";
 import AdminLanding from "./app/admin/AdminLandingPage";
 import Landing from "./app/user/components/Landing";
 import ProductsList from "./Products";
-import ProductDetails from "./app/ProductDetails";
 import Login from "./app/user/components/Login";
 import SignUp from "./app/user/components/SignUp";
+import ProductDetails from "./app/user/components/ProductDetails";
 export default function Router() {
   return (
     <BrowserRouter>

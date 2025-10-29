@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Button from "../../src/app/shared/controls/Button";
+import Button from "../../shared/controls/Button";
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   return (

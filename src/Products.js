@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ProductCard from "./app/ProductCard";
 import ProductServices from "./app/services/productServices";
+import ProductCard from "./app/user/components/ProductCard";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
