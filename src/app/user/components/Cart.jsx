@@ -1,32 +1,18 @@
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import CartServices from "../../services/cartServices";
 
-function CartList() {
-  const data = useSelector((state) => state.data);
-  console.log("dat", data);
-  if (!data || data.length === 0) {
-    return <p>Your cart is empty.</p>;
-  }
+const Cart = () => {
+  const [cart, setCart] = useState([]);
+  useEffect(() => {
+    const getCart = async () => {
+      const response = await CartServices.getCart();
+      setCart(response.data);
+      console.log("cart", cart);
+    };
 
-  return (
-    <div>
-      {data.items.map((item) => (
-        <div
-          key={item._id}
-          style={{ border: "1px solid #ddd", margin: 10, padding: 10 }}
-        >
-          <h3>{item.productName || item.name}</h3>
-          <p>{item.description}</p>
-          <p>${item.price}</p>
-          <img
-            src={item.image}
-            alt={item.productName || item.name}
-            width="120"
-          />
-        </div>
-      ))}
-      <h3>Total: ${data.totalPrice}</h3>
-    </div>
-  );
-}
+    getCart();
+  }, []);
+  return <div>{cart.createdAt}</div>;
+};
 
-export default CartList;
+export default Cart;
