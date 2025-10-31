@@ -1,6 +1,6 @@
 const dbserver = {
   server: "localhost",
-  port: 3000,
+  port: 1000,
 };
 
 export default dbserver;

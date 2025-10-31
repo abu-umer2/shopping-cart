@@ -16,12 +16,13 @@ const ProductDetails = () => {
     navigate(-1);
   };
   function addToCart(productInfo) {
-    dispatch({ type: "Inc", payload: productInfo });
-
+    const user = sessionStorage.getItem("userAuth");
+    if (!user) {
+      updateIsLogin(true);
+    }
     CartServices.addItemToCart(productInfo)
       .then((res) => console.log("Cart synced with backend:", res.data))
       .catch((err) => console.error("Failed to sync cart:", err));
-    updateIsLogin(true); // show login if not authenticated
   }
 
   return (
