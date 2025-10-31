@@ -12,6 +12,7 @@ import ProductsList from "./Products";
 import Login from "./app/user/components/Login";
 import SignUp from "./app/user/components/SignUp";
 import ProductDetails from "./app/user/components/ProductDetails";
+import Cart from "./app/user/components/Cart";
 export default function Router() {
   return (
     <BrowserRouter>
@@ -37,6 +38,7 @@ export default function Router() {
           <Route path="productDetails" element={<ProductDetails />} />
           <Route path="login" element={<Login />} />
           <Route path="siginup" element={<SignUp />} />
+          <Route path="cart" element={<Cart />} />
         </Route>
         <Route path="*" element={<Pagenotfound />} />
       </Routes>

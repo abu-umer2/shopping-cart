@@ -1,17 +1,16 @@
 import { createStore } from "redux";
 
 const initialState = {
-  data: 2
+  data: [],
 };
 
 function dataReducer(state = initialState, action) {
   switch (action.type) {
     case "Inc":
-        let val=parseInt(state.data)
-        val=val+1
-        state={data:val}
-        console.log(state);
-      return  state ;
+      return {
+        ...state,
+        data: [...state.data, action.payload],
+      };
     default:
       return state;
   }

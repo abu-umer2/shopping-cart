@@ -7,12 +7,14 @@ import ProductServices from "../../services/productServices";
 const Login = ({ updateIsLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      await ProductServices.userLogin(username, password);
-      sessionStorage.setItem("userAuth", 1);
+      const response = await ProductServices.userLogin(username, password);
+      const token = response.data.accessToken;
+      sessionStorage.setItem("userAuth", token);
       navigate("../user");
       updateIsLogin(false);
     } catch (error) {
@@ -49,7 +51,7 @@ const Login = ({ updateIsLogin }) => {
         <div className="">
           <label htmlFor="">Password:</label>
           <Input
-            type="password"
+            type={show ? "text" : "password"}
             className="form-control"
             placeholder="Enter your Password"
             name={password}
@@ -57,6 +59,13 @@ const Login = ({ updateIsLogin }) => {
               setPassword(e.target.value);
             }}
           />
+          <button
+            className="btn btn-link p-0 ms-2"
+            type="button"
+            onClick={() => setShow((prev) => !prev)}
+          >
+            {show ? "hide" : "show"}
+          </button>
         </div>
 
         <Button size="small" type="submit">
