@@ -4,6 +4,7 @@ import CommomUtils from "../common/utils";
 import { useState } from "react";
 import Login from "./Login";
 import { useDispatch } from "react-redux";
+import CartServices from "../../services/cartServices";
 const ProductDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -15,39 +16,12 @@ const ProductDetails = () => {
     navigate(-1);
   };
   function addToCart(productInfo) {
-    console.log(productInfo);
-    const obj = { type: "Inc", payload: productInfo };
-    dispatch(obj);
+    dispatch({ type: "Inc", payload: productInfo });
 
-    let selectedProducts = [];
-
-    // Check if user is authenticated
-    if (sessionStorage.getItem("userAuth")) {
-      // Check if cart already exists in localStorage
-      if (localStorage.getItem("cartProducts")) {
-        selectedProducts = JSON.parse(localStorage.getItem("cartProducts"));
-      }
-
-      // Check if the product already exists in the cart
-      let productIndex = selectedProducts.findIndex(
-        (product) => product.pid === productInfo._id
-      );
-      if (productIndex !== -1) {
-        // If the product exists, increase the quantity
-        selectedProducts[productIndex].qty += 1;
-      } else {
-        // If the product doesn't exist, add it to the cart
-        let obj = { pid: productInfo._id, qty: 1 };
-        selectedProducts.push(obj);
-      }
-
-      // Store the updated cart in localStorage
-      localStorage.setItem("cartProducts", JSON.stringify(selectedProducts));
-    } else {
-      // If not authenticated, show login dialog
-      // CommomUtils.ShowDialog(); // Uncomment this if you want to show a login dialog
-      updateIsLogin(true);
-    }
+    CartServices.addItemToCart(productInfo)
+      .then((res) => console.log("Cart synced with backend:", res.data))
+      .catch((err) => console.error("Failed to sync cart:", err));
+    updateIsLogin(true); // show login if not authenticated
   }
 
   return (

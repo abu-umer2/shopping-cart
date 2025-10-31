@@ -1,33 +1,32 @@
 import { useState } from "react";
-import userImg from "../../assits/banner1.jpg";
 import "./common.scss";
 import Button from "../../shared/controls/Button";
 import CommomUtils from "../common/utils";
 import Login from "../components/Login";
-import { Provider, useDispatch, useSelector } from "react-redux";
-import store from "./../data/reducer";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isLogin, updateIsLogin] = useState(false);
   const [isOpen, updateIsOpen] = useState(false);
   const data = useSelector((state) => state.data);
-    const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   // alert(data)
   const admin = sessionStorage.getItem("adminAuth");
   const user = sessionStorage.getItem("userAuth");
-  let productCount=data;
+  let productCount = data;
   // let [productCount,updateProductCount]=useState(0)
   console.log("user", user);
-  const handleToggle = (e) => {
-    const expanded = e.currentTarget.getAttribute("aria-expanded") === "true";
-    setIsExpanded(expanded);
+  // const handleToggle = (e) => {
+  //   const expanded = e.currentTarget.getAttribute("aria-expanded") === "true";
+  //   setIsExpanded(expanded);
+  // };
+  setTimeout(() => {
+    //  updateProductCount(localData? localData.length : 0)
+  }, 100);
+  const goToCart = () => {
+    navigate("./cart");
   };
-  setTimeout(()=>{
-  //  updateProductCount(localData? localData.length : 0)
-  },100)
-
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
       {isLogin && (
@@ -61,59 +60,67 @@ export default function Header() {
             </form>
           </div>
         </div>
-        <div
-          className=" countDiv"
-          onClick={() => updateIsOpen((prev) => !prev)}
-        >
-          {user || admin ? (
-            <div className="dropdown">
-              {productCount}
-              {isOpen && (
-                <ul
-                  className="dropdown-menu show position-absolute end-0 mt-2 shadow rounded"
-                  style={{ minWidth: "150px" }}
-                >
-                  <li>
-                    <button className="dropdown-item">Profile</button>
-                  </li>
-                  <li>
-                    <button className="dropdown-item">Orders</button>
-                  </li>
-                  <li>
-                    <button
-                      className="dropdown-item text-danger"
-                      onClick={() => {
-                        sessionStorage.clear();
-                        localStorage.clear();
-                        window.location.reload();
-                      }}
-                    >
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              )}
+        <div className="d-flex gap-3 align-items-center">
+          {user && productCount !== 0 ? (
+            <div
+              className="position-relative "
+              style={{ cursor: "pointer" }}
+              onClick={goToCart}
+            >
+              <i className="fa fa-shopping-cart fa-2x text-white"></i>
+              <span className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">
+                {productCount}
+              </span>
             </div>
           ) : (
-            <Button
-              size="small"
-              className="btn btn-secondary border-0 px-2"
-              type="button"
-              onClick={() => updateIsLogin(true)}
-              s
-            >
-              Login
-            </Button>
+            ""
           )}
+          <div
+            className=" countDiv"
+            onClick={() => updateIsOpen((prev) => !prev)}
+          >
+            {user || admin ? (
+              <div className="dropdown">
+                {isOpen && (
+                  <div>
+                    <ul
+                      className="dropdown-menu show position-absolute end-0 mt-2 shadow rounded"
+                      style={{ minWidth: "150px" }}
+                    >
+                      <li>
+                        <button className="dropdown-item">Profile</button>
+                      </li>
+                      <li>
+                        <button className="dropdown-item">Orders</button>
+                      </li>
+                      <li>
+                        <button
+                          className="dropdown-item text-danger"
+                          onClick={() => {
+                            sessionStorage.removeItem("userAuth");
+                            window.location.reload();
+                          }}
+                        >
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Button
+                size="small"
+                className="btn btn-secondary border-0 px-2"
+                type="button"
+                onClick={() => updateIsLogin(true)}
+                s
+              >
+                Login
+              </Button>
+            )}
+          </div>
         </div>
-        {/* <button
-          onClick={() => {
-            const obj = { type: "Inc", payload: productCount };
-            dispatch(obj);
-          }}
-        >
-          Update
-        </button> */}
       </div>
     </nav>
   );
