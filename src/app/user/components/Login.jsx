@@ -14,7 +14,10 @@ const Login = ({ updateIsLogin }) => {
     try {
       const response = await ProductServices.userLogin(username, password);
       const token = response.data.accessToken;
+      const user = response.data.user;
       sessionStorage.setItem("userAuth", token);
+      sessionStorage.setItem("user", JSON.stringify(user));
+      console.log("user11", user);
       navigate("../user");
       updateIsLogin(false);
     } catch (error) {

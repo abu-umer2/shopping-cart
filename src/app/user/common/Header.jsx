@@ -84,11 +84,18 @@ export default function Header() {
                 {isOpen && (
                   <div>
                     <ul
-                      className="dropdown-menu show position-absolute end-0 mt-2 shadow rounded"
+                      className="dropdown-menu show position-absolute end-0 mt-5 shadow rounded"
                       style={{ minWidth: "150px" }}
                     >
                       <li>
-                        <button className="dropdown-item">Profile</button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => {
+                            navigate("./profile");
+                          }}
+                        >
+                          Profile
+                        </button>
                       </li>
                       <li>
                         <button className="dropdown-item">Orders</button>

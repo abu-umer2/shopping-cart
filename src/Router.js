@@ -13,6 +13,7 @@ import Login from "./app/user/components/Login";
 import SignUp from "./app/user/components/SignUp";
 import ProductDetails from "./app/user/components/ProductDetails";
 import Cart from "./app/user/components/Cart";
+import Profile from "./app/user/components/Profile";
 export default function Router() {
   return (
     <BrowserRouter>
@@ -39,6 +40,7 @@ export default function Router() {
           <Route path="login" element={<Login />} />
           <Route path="siginup" element={<SignUp />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
         <Route path="*" element={<Pagenotfound />} />
       </Routes>
