@@ -12,7 +12,7 @@ const Cart = () => {
 
     getCart();
   }, []);
-
+  console.log("cart", cart);
   if (!cart.items || cart.items.length === 0) return <p>Your cart is empty.</p>;
   return (
     <div>
@@ -21,6 +21,14 @@ const Cart = () => {
           <h1>{item.productName}</h1>
         </div>
       ))}
+
+      {/* <div>
+        <div>
+          <img src={item.} alt="" />
+          <div><p></p>
+          <p></p></div>
+        </div>
+      </div> */}
     </div>
   );
 };
