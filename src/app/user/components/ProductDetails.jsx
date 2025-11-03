@@ -5,6 +5,8 @@ import { useState } from "react";
 import Login from "./Login";
 import { useDispatch } from "react-redux";
 import CartServices from "../../services/cartServices";
+import { addTocart } from "../data/cartSlice";
+
 const ProductDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -15,14 +17,15 @@ const ProductDetails = () => {
   const handleBack = () => {
     navigate(-1);
   };
-  function addToCart(productInfo) {
-    const user = sessionStorage.getItem("userAuth");
-    if (!user) {
-      updateIsLogin(true);
-    }
-    CartServices.addItemToCart(productInfo)
-      .then((res) => console.log("Cart synced with backend:", res.data))
-      .catch((err) => console.error("Failed to sync cart:", err));
+  function handelAddToCart(productInfo) {
+    // const user = sessionStorage.getItem("userAuth");
+    // if (!user) {
+    //   updateIsLogin(true);
+    // }
+    // CartServices.addItemToCart(productInfo)
+    //   .then((res) => console.log("Cart synced with backend:", res.data))
+    //   .catch((err) => console.error("Failed to sync cart:", err));
+    dispatch(addTocart(productInfo));
   }
 
   return (
@@ -68,7 +71,7 @@ const ProductDetails = () => {
             <Button
               className=" w-50"
               size="small"
-              onClick={() => addToCart(product)}
+              onClick={() => handelAddToCart(product)}
             >
               Add to Cart
             </Button>

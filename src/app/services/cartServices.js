@@ -1,9 +1,18 @@
 import axios from "axios";
 import dbserver from "../dbserver";
 
-const token = sessionStorage.getItem("userAuth");
+const getToken = () => {
+  try {
+    const userData = sessionStorage.getItem("userAuth");
+    return userData;
+  } catch (error) {
+    return null;
+  }
+};
+
 const CartServices = {
   getCart() {
+    const token = getToken();
     console.log("tt", token);
 
     return axios.get(`http://${dbserver.server}:${dbserver.port}/cart`, {
@@ -14,6 +23,7 @@ const CartServices = {
     });
   },
   addItemToCart(productInfo) {
+    const token = getToken();
     const payload = {
       productId: productInfo._id,
       quantity: 1,
