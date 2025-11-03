@@ -5,7 +5,7 @@ const AuthServices = {
     const payload = { username, password };
     console.log("Sending login payload:", payload);
     return axios.post(
-      `http://${dbserver.server}:${dbserver.port}/auth/login`,
+      `http://${dbserver.server}:${dbserver.port}/auth/admin/login`,
       payload
     );
   },
@@ -18,6 +18,13 @@ const AuthServices = {
   fetchSubCategories(category) {
     return axios.get(
       `http://${dbserver.server}:${dbserver.port}/sub-categories/subs/${category}`
+    );
+  },
+  createCategory({ name }) {
+    const payload = { name };
+    return axios.post(
+      `http://${dbserver.server}:${dbserver.port}/categories`,
+      payload
     );
   },
   fetchAllSubCategories() {

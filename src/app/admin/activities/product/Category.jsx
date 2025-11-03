@@ -1,26 +1,50 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "../../../shared/controls/Input";
 import Button from "../../../shared/controls/Button";
-import axios from "axios";
+import Modal from "bootstrap/js/dist/modal";
+import AuthServices from "../../services/auth";
 
 export default function Category() {
   const [cat, setCat] = useState("");
   // const [isActive, setIsActive] = useState(true);
   const [categories, setCategories] = useState([]);
 
-  const onSubmit = async () => {
-    await axios.post("http://localhost:3000/categories", {
-      name: cat,
-    });
+  useEffect(() => {
+    AuthServices.fetchCategories().then((res) => setCategories(res.data));
+  }, []);
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await AuthServices.createCategory({ name: cat });
+
+      const res = await AuthServices.fetchCategories();
+      setCategories(res.data);
+      console.log(res.data);
+    } catch (err) {
+      console.error("Error creating category:", err);
+    }
   };
 
-  useEffect(() => {
-    axios.get("http://localhost:3000/categories").then((response) => {
-      setCategories(response.data);
-    });
-  }, []);
-
-  
+  function displayModal() {
+    const myModalElement = document.getElementById("myModal");
+    if (myModalElement) {
+      let myModal = Modal.getInstance(myModalElement);
+      if (!myModal) {
+        myModal = new Modal(myModalElement);
+      }
+      myModal.show();
+    }
+  }
+  const closeModal = () => {
+    const myModalElement = document.getElementById("myModal");
+    if (myModalElement) {
+      const modal = Modal.getInstance(myModalElement);
+      if (modal) {
+        modal.hide();
+      }
+    }
+  };
 
   return (
     <div className="container d-flex flex-column mt-5 justify-content-center align-items-center">
@@ -54,14 +78,16 @@ export default function Category() {
           </tbody>
         </table>
         <div className="d-flex justify-content-center">
-          <button
+          <Button
             type="button"
-            class="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#myModal"
+            size="small"
+            className=""
+            onClick={() => {
+              displayModal();
+            }}
           >
             Add Category
-          </button>
+          </Button>
         </div>
 
         <div className="modal" id="myModal">
@@ -88,7 +114,7 @@ export default function Category() {
                     type="submit"
                     variant="primary"
                     size="medium"
-                    className="btn px-5 mt-2"
+                    className="px-5 mt-2"
                     onClick={onSubmit}
                   >
                     ADD
@@ -97,15 +123,18 @@ export default function Category() {
               </div>
 
               <div className="d-flex justify-content-center">
-                <button
+                <Button
                   type="button"
-                  class="btn btn-danger"
+                  className="px-5"
                   data-bs-dismiss="modal"
-                  className="btn btn-primary mb-2 "
-                  style={{ width: "100px" }}
+                  size="small"
+                  variant="close"
+                  onClick={() => {
+                    closeModal();
+                  }}
                 >
                   Close
-                </button>
+                </Button>
               </div>
             </div>
           </div>
