@@ -22,10 +22,15 @@ const ProductDetails = () => {
     // if (!user) {
     //   updateIsLogin(true);
     // }
-    // CartServices.addItemToCart(productInfo)
-    //   .then((res) => console.log("Cart synced with backend:", res.data))
-    //   .catch((err) => console.error("Failed to sync cart:", err));
-    dispatch(addTocart(productInfo));
+    CartServices.addItemToCart(productInfo)
+      .then((res) => 
+        {console.log("Cart synced with backend:", res.data)
+          dispatch(addTocart(productInfo))
+        })
+      .catch((err) => console.error("Failed to sync cart:", err));
+   
+   // ;
+
   }
 
   return (

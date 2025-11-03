@@ -23,6 +23,7 @@ const CartServices = {
     });
   },
   addItemToCart(productInfo) {
+    alert("Called")
     const token = getToken();
     const payload = {
       productId: productInfo._id,
