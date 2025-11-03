@@ -18,17 +18,17 @@ const initialState = {
   cartTotoalAmount: 0,
 };
 
-export const getCart = () => {
-  const token = getToken();
-  console.log("tt", token);
+// export const getCart = () => {
+//   const token = getToken();
+//   console.log("tt", token);
 
-  return axios.get(`http://${dbserver.server}:${dbserver.port}/cart`, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
+//   return axios.get(`http://${dbserver.server}:${dbserver.port}/cart`, {
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
+// };
 
 const cartSlice = createSlice({
   name: "cart",
