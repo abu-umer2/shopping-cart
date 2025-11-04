@@ -1,45 +1,34 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import axios from "axios";
-import dbserver from "../../dbserver";
-
-const getToken = () => {
-  try {
-    const userData = sessionStorage.getItem("userAuth");
-    return userData;
-  } catch (error) {
-    return null;
-  }
-};
-
 const initialState = {
-  cartItems: [],
+  items: [],
   cartTotalQuantity: 0,
   cartTotoalAmount: 0,
 };
-
-// export const getCart = () => {
-//   const token = getToken();
-//   console.log("tt", token);
-
-//   return axios.get(`http://${dbserver.server}:${dbserver.port}/cart`, {
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-// };
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
     addTocart(state, action) {
-      alert("Slice")
-      state.cartItems.push(action.payload);
+      state.items.push(action.payload);
     },
+    deleteItem(state, action) {
+      state.items = state.items.filter(
+        (item) => item._id !== action.payload._id
+      );
+    },
+
+    // reducequantity(state, action) {
+    //   const item = state.items.filter(
+    //     (item) => item._id === action.payload._id
+    //   );
+    //   if (item) {
+    //     item.quan;
+    //   }
+    // },
   },
 });
 
-export const { addTocart } = cartSlice.actions;
+export const { addTocart, deleteItem } = cartSlice.actions;
 export default cartSlice.reducer;

@@ -13,7 +13,6 @@ const getToken = () => {
 const CartServices = {
   getCart() {
     const token = getToken();
-    console.log("tt", token);
 
     return axios.get(`http://${dbserver.server}:${dbserver.port}/cart`, {
       headers: {
@@ -22,8 +21,20 @@ const CartServices = {
       },
     });
   },
+
+  async deleteItemsfromCart(productId) {
+    const token = getToken();
+    return axios.delete(
+      `http://${dbserver.server}:${dbserver.port}/cart/items/${productId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
   addItemToCart(productInfo) {
-    alert("Called")
     const token = getToken();
     const payload = {
       productId: productInfo._id,

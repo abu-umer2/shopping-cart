@@ -17,20 +17,20 @@ const ProductDetails = () => {
   const handleBack = () => {
     navigate(-1);
   };
-  function handelAddToCart(productInfo) {
-    // const user = sessionStorage.getItem("userAuth");
-    // if (!user) {
-    //   updateIsLogin(true);
-    // }
-    CartServices.addItemToCart(productInfo)
-      .then((res) => 
-        {console.log("Cart synced with backend:", res.data)
-          dispatch(addTocart(productInfo))
-        })
+  function handelAddToCart(product) {
+    console.log("pro", product);
+    const user = sessionStorage.getItem("userAuth");
+    if (!user) {
+      updateIsLogin(true);
+    }
+    CartServices.addItemToCart(product)
+      .then((res) => {
+        console.log("Cart synced with backend:", res.data);
+        dispatch(addTocart(product));
+      })
       .catch((err) => console.error("Failed to sync cart:", err));
-   
-   // ;
 
+    // ;
   }
 
   return (

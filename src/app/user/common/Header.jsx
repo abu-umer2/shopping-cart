@@ -9,13 +9,12 @@ import { useNavigate } from "react-router-dom";
 export default function Header() {
   const [isLogin, updateIsLogin] = useState(false);
   const [isOpen, updateIsOpen] = useState(false);
-  const data = useSelector((state) => state.data);
   const navigate = useNavigate();
   // alert(data)
+  const items = useSelector((state) => state.cart.items || []);
+  console.log("cart", items.items);
   const admin = sessionStorage.getItem("adminAuth");
   const user = sessionStorage.getItem("userAuth");
-  let productCount = data;
-  // let [productCount,updateProductCount]=useState(0)
   console.log("user", user);
   // const handleToggle = (e) => {
   //   const expanded = e.currentTarget.getAttribute("aria-expanded") === "true";
@@ -61,20 +60,17 @@ export default function Header() {
           </div>
         </div>
         <div className="d-flex gap-3 align-items-center">
-          {user && productCount !== 0 ? (
-            <div
-              className="position-relative "
-              style={{ cursor: "pointer" }}
-              onClick={goToCart}
-            >
-              <i className="fa fa-shopping-cart fa-2x text-white"></i>
-              <span className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">
-                {productCount}
-              </span>
-            </div>
-          ) : (
-            ""
-          )}
+          <div
+            className="position-relative "
+            style={{ cursor: "pointer" }}
+            onClick={goToCart}
+          >
+            <i className="fa fa-shopping-cart fa-2x text-white"></i>
+            <span className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">
+              {items?.length || 0}
+            </span>
+          </div>
+
           <div
             className=" countDiv"
             onClick={() => updateIsOpen((prev) => !prev)}
