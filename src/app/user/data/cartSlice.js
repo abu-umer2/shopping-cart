@@ -14,21 +14,17 @@ const cartSlice = createSlice({
       state.items.push(action.payload);
     },
     deleteItem(state, action) {
+      console.log("Before delete:", state.items.length);
       state.items = state.items.filter(
-        (item) => item._id !== action.payload._id
+        (item) => item.productId !== action.payload
       );
+      console.log("After delete:", state.items);
     },
-
-    // reducequantity(state, action) {
-    //   const item = state.items.filter(
-    //     (item) => item._id === action.payload._id
-    //   );
-    //   if (item) {
-    //     item.quan;
-    //   }
-    // },
+    emptyCart(state) {
+      state.items = [];
+    },
   },
 });
 
-export const { addTocart, deleteItem } = cartSlice.actions;
+export const { addTocart, deleteItem, emptyCart } = cartSlice.actions;
 export default cartSlice.reducer;

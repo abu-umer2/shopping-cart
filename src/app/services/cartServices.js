@@ -21,19 +21,6 @@ const CartServices = {
       },
     });
   },
-
-  async deleteItemsfromCart(productId) {
-    const token = getToken();
-    return axios.delete(
-      `http://${dbserver.server}:${dbserver.port}/cart/items/${productId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-  },
   addItemToCart(productInfo) {
     const token = getToken();
     const payload = {
@@ -48,6 +35,39 @@ const CartServices = {
         headers: {
           "Content-Type": "application/json",
 
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+  async deleteItemsfromCart(productId) {
+    const token = getToken();
+    return axios.delete(
+      `http://${dbserver.server}:${dbserver.port}/cart/items/${productId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+  async clearCart() {
+    const token = getToken();
+    return axios.delete(`http://${dbserver.server}:${dbserver.port}/cart`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+  async deleteItemsfromCart(productId) {
+    const token = getToken();
+    return axios.delete(
+      `http://${dbserver.server}:${dbserver.port}/cart/items/${productId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       }

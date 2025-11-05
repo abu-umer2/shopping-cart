@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CartServices from "../../services/cartServices";
 import Button from "../../shared/controls/Button";
 import { useDispatch } from "react-redux";
-import { deleteItem } from "../data/cartSlice";
+import { deleteItem, emptyCart } from "../data/cartSlice";
 const Cart = () => {
   const [cart, setCart] = useState([]);
   const dispatch = useDispatch();
@@ -10,18 +10,35 @@ const Cart = () => {
     const getCart = async () => {
       const response = await CartServices.getCart();
       setCart(response.data);
-      console.log("cart", response.data);
+      console.log("cart", response.data.items);
     };
 
     getCart();
   }, []);
-
   const removeItemFromCart = async (productId) => {
     try {
+      console.log("Deleting product ID:", productId);
+
       await CartServices.deleteItemsfromCart(productId);
       dispatch(deleteItem(productId));
     } catch (error) {
-      console.error("Error removing item:", error);
+      console.error(
+        "Error removing item:",
+        error.response?.data || error.message
+      );
+    }
+  };
+  const clearCart = async (productId) => {
+    try {
+      console.log("Deleting product ID:", productId);
+
+      await CartServices.clearCart();
+      dispatch(emptyCart());
+    } catch (error) {
+      console.error(
+        "Error removing item:",
+        error.response?.data || error.message
+      );
     }
   };
   console.log("cart", cart);
@@ -60,7 +77,7 @@ const Cart = () => {
                 variant="close"
                 className="border-0"
                 onClick={() => {
-                  removeItemFromCart(item._id);
+                  removeItemFromCart(item.productId);
                 }}
               >
                 delete
@@ -69,7 +86,13 @@ const Cart = () => {
           </div>
         ))}
         <div className="justify-content-center">
-          <Button size="small" className="m-3">
+          <Button
+            size="small"
+            className="m-3"
+            onClick={() => {
+              clearCart();
+            }}
+          >
             Clear Cart
           </Button>
         </div>
