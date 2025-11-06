@@ -1,32 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./common.scss";
 import Button from "../../shared/controls/Button";
 import CommomUtils from "../common/utils";
 import Login from "../components/Login";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import CartServices from "../../services/cartServices";
+import { setCartItems } from "../data/cartSlice";
 
 export default function Header() {
   const [isLogin, updateIsLogin] = useState(false);
   const [isOpen, updateIsOpen] = useState(false);
-  const data = useSelector((state) => state.data);
   const navigate = useNavigate();
-  // alert(data)
+  const dispatch = useDispatch();
+  const items = useSelector((state) => state.cart.items);
+
   const admin = sessionStorage.getItem("adminAuth");
   const user = sessionStorage.getItem("userAuth");
-  let productCount = data;
-  // let [productCount,updateProductCount]=useState(0)
-  console.log("user", user);
-  // const handleToggle = (e) => {
-  //   const expanded = e.currentTarget.getAttribute("aria-expanded") === "true";
-  //   setIsExpanded(expanded);
-  // };
-  setTimeout(() => {
-    //  updateProductCount(localData? localData.length : 0)
-  }, 100);
-  const goToCart = () => {
-    navigate("./cart");
-  };
+
+  useEffect(() => {
+    const getCart = async () => {
+      const response = await CartServices.getCart();
+      dispatch(setCartItems(response.data.items));
+    };
+
+    getCart();
+  }, [dispatch]);
+
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
       {isLogin && (
@@ -61,20 +61,19 @@ export default function Header() {
           </div>
         </div>
         <div className="d-flex gap-3 align-items-center">
-          {user && productCount !== 0 ? (
-            <div
-              className="position-relative "
-              style={{ cursor: "pointer" }}
-              onClick={goToCart}
-            >
-              <i className="fa fa-shopping-cart fa-2x text-white"></i>
-              <span className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">
-                {productCount}
-              </span>
-            </div>
-          ) : (
-            ""
-          )}
+          <div
+            className="position-relative "
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              navigate("./cart");
+            }}
+          >
+            <i className="fa fa-shopping-cart fa-2x text-white"></i>
+            <span className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">
+              {items?.length || 0}
+            </span>
+          </div>
+
           <div
             className=" countDiv"
             onClick={() => updateIsOpen((prev) => !prev)}

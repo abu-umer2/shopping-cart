@@ -1,45 +1,47 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import axios from "axios";
-import dbserver from "../../dbserver";
-
-const getToken = () => {
-  try {
-    const userData = sessionStorage.getItem("userAuth");
-    return userData;
-  } catch (error) {
-    return null;
-  }
-};
-
 const initialState = {
-  cartItems: [],
+  items: [],
   cartTotalQuantity: 0,
   cartTotoalAmount: 0,
 };
-
-// export const getCart = () => {
-//   const token = getToken();
-//   console.log("tt", token);
-
-//   return axios.get(`http://${dbserver.server}:${dbserver.port}/cart`, {
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-// };
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    setCartItems(state, action) {
+      state.items = action.payload;
+    },
     addTocart(state, action) {
-      alert("Slice")
-      state.cartItems.push(action.payload);
+      state.items.push(action.payload);
+    },
+    deleteItem(state, action) {
+      console.log("Before delete:", state.items.length);
+      state.items = state.items.filter(
+        (item) => item.productId !== action.payload
+      );
+      console.log("After delete:", state.items);
+    },
+    emptyCart(state) {
+      state.items = [];
+    },
+
+    updateQuantity(state, action) {
+      const { productId, quantity } = action.payload;
+      const item = state.items.find((item) => item.productId === productId);
+      if (item) {
+        item.quantity = quantity;
+      }
     },
   },
 });
 
-export const { addTocart } = cartSlice.actions;
+export const {
+  addTocart,
+  deleteItem,
+  emptyCart,
+  setCartItems,
+  updateQuantity,
+} = cartSlice.actions;
 export default cartSlice.reducer;

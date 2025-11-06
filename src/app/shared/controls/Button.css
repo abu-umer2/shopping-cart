@@ -26,6 +26,11 @@ background-color: rgb(2, 127, 44);
 color: white;
 
 }
+.button-custom-style.white {
+background-color: white;
+color: black;
+
+}
 
 .button-custom-style.small {
     font-size: 1rem;

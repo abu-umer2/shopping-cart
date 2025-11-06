@@ -13,7 +13,6 @@ const getToken = () => {
 const CartServices = {
   getCart() {
     const token = getToken();
-    console.log("tt", token);
 
     return axios.get(`http://${dbserver.server}:${dbserver.port}/cart`, {
       headers: {
@@ -23,7 +22,6 @@ const CartServices = {
     });
   },
   addItemToCart(productInfo) {
-    alert("Called")
     const token = getToken();
     const payload = {
       productId: productInfo._id,
@@ -37,6 +35,41 @@ const CartServices = {
         headers: {
           "Content-Type": "application/json",
 
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+  async deleteItemsfromCart(productId) {
+    const token = getToken();
+    return axios.delete(
+      `http://${dbserver.server}:${dbserver.port}/cart/items/${productId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+  async clearCart() {
+    const token = getToken();
+    return axios.delete(`http://${dbserver.server}:${dbserver.port}/cart`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+  async updateItemQuantity(productId, newQty) {
+    const token = getToken();
+    return axios.patch(
+      `http://${dbserver.server}:${dbserver.port}/cart/items/${productId}`,
+
+      { quantity: newQty },
+      {
+        headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       }
