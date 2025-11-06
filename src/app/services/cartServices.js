@@ -61,10 +61,12 @@ const CartServices = {
       },
     });
   },
-  async deleteItemsfromCart(productId) {
+  async updateItemQuantity(productId, newQty) {
     const token = getToken();
-    return axios.delete(
+    return axios.patch(
       `http://${dbserver.server}:${dbserver.port}/cart/items/${productId}`,
+
+      { quantity: newQty },
       {
         headers: {
           "Content-Type": "application/json",
