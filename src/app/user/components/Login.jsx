@@ -1,25 +1,34 @@
 import React, { useState } from "react";
 import Input from "../../shared/controls/Input";
 import Button from "../../shared/controls/Button";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ProductServices from "../../services/productServices";
+import { useDispatch } from "react-redux";
+import { login } from "../data/authSlice";
+import CartServices from "../../services/cartServices";
+import { setCartItems } from "../data/cartSlice";
 
 const Login = ({ updateIsLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const from = location.state?.from || "/";
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await ProductServices.userLogin(username, password);
-      const token = response.data.accessToken;
-      const user = response.data.user;
-      sessionStorage.setItem("userAuth", token);
-      sessionStorage.setItem("user", JSON.stringify(user));
-      console.log("user11", user);
-      navigate("../user");
-      updateIsLogin(false);
+      const response = await ProductServices.userLogin(
+        username,
+        password
+      ).then();
+
+      dispatch(login(response.data));
+      // updateIsLogin(false);
+      const cartResponse = CartServices.getCart();
+      dispatch(setCartItems(cartResponse.data.items));
+      navigate(from, { replace: true });
     } catch (error) {
       console.error(error);
 

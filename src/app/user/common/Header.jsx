@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import "./common.scss";
 import Button from "../../shared/controls/Button";
+import userimg from "../../assits/banner2.jpg";
 import CommomUtils from "../common/utils";
 import Login from "../components/Login";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import CartServices from "../../services/cartServices";
 import { setCartItems } from "../data/cartSlice";
+import { logout } from "../data/authSlice";
 
 export default function Header() {
   const [isLogin, updateIsLogin] = useState(false);
@@ -16,7 +18,9 @@ export default function Header() {
   const items = useSelector((state) => state.cart.items);
 
   const admin = sessionStorage.getItem("adminAuth");
-  const user = sessionStorage.getItem("userAuth");
+  // const user = sessionStorage.getItem("token");
+  const user = useSelector((state) => state.auth.user);
+  console.log("authuser", user);
 
   useEffect(() => {
     const getCart = async () => {
@@ -70,7 +74,7 @@ export default function Header() {
           >
             <i className="fa fa-shopping-cart fa-2x text-white"></i>
             <span className="position-absolute top-0 start-100 translate-middle badge bg-danger rounded-circle">
-              {items?.length || 0}
+              {items.length !== 0 ? items.length : ""}
             </span>
           </div>
 
@@ -79,40 +83,47 @@ export default function Header() {
             onClick={() => updateIsOpen((prev) => !prev)}
           >
             {user || admin ? (
-              <div className="dropdown">
-                {isOpen && (
-                  <div>
-                    <ul
-                      className="dropdown-menu show position-absolute end-0 mt-5 shadow rounded"
-                      style={{ minWidth: "150px" }}
-                    >
-                      <li>
-                        <button
-                          className="dropdown-item"
-                          onClick={() => {
-                            navigate("./profile");
-                          }}
-                        >
-                          Profile
-                        </button>
-                      </li>
-                      <li>
-                        <button className="dropdown-item">Orders</button>
-                      </li>
-                      <li>
-                        <button
-                          className="dropdown-item text-danger"
-                          onClick={() => {
-                            sessionStorage.removeItem("userAuth");
-                            window.location.reload();
-                          }}
-                        >
-                          Logout
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                )}
+              <div>
+                <img
+                  className="rounded rounded-circle"
+                  src={userimg}
+                  alt="img"
+                  style={{ width: "30px", height: "30px" }}
+                />
+                <div className="dropdown">
+                  {isOpen && (
+                    <div>
+                      <ul
+                        className="dropdown-menu show position-absolute end-0 mt-5 shadow rounded"
+                        style={{ minWidth: "150px" }}
+                      >
+                        <li>
+                          <button
+                            className="dropdown-item"
+                            onClick={() => {
+                              navigate("./profile");
+                            }}
+                          >
+                            Profile
+                          </button>
+                        </li>
+                        <li>
+                          <button className="dropdown-item">Orders</button>
+                        </li>
+                        <li>
+                          <button
+                            className="dropdown-item text-danger"
+                            onClick={() => {
+                              dispatch(logout());
+                            }}
+                          >
+                            Logout
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
               <Button

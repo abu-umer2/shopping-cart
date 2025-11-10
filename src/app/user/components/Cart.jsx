@@ -1,19 +1,25 @@
 import CartServices from "../../services/cartServices";
 import Button from "../../shared/controls/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteItem, emptyCart, updateQuantity } from "../data/cartSlice";
+import {
+  deleteItem,
+  emptyCart,
+  setCartItems,
+  updateQuantity,
+} from "../data/cartSlice";
+import { useEffect } from "react";
 const Cart = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
-  // useEffect(() => {
-  //   const getCart = async () => {
-  //     const response = await CartServices.getCart();
-  //     dispatch(setCartItems(response.data.items));
-  //     console.log("cart", response.data.items);
-  //   };
+  useEffect(() => {
+    const getCart = async () => {
+      const response = await CartServices.getCart();
+      dispatch(setCartItems(response.data.items));
+      console.log("cart", response.data.items);
+    };
 
-  //   getCart();
-  // }, []);
+    getCart();
+  }, [dispatch]);
   const removeItemFromCart = async (productId) => {
     try {
       console.log("Deleting product ID:", productId);
@@ -77,14 +83,22 @@ const Cart = () => {
                     onClick={() =>
                       handleDecrease(item.productId, item.quantity)
                     }
+                    className="rounded-2 bg-white"
                   >
                     -
                   </button>
-                  <input type="text" value={item.quantity} readOnly />
+                  <input
+                    type="text"
+                    value={item.quantity}
+                    className="text-center border-2 rounded-2"
+                    readOnly
+                    style={{ width: "25px" }}
+                  />
                   <button
                     onClick={() =>
                       handleIncrease(item.productId, item.quantity)
                     }
+                    className="rounded-2 bg-white"
                   >
                     +
                   </button>
