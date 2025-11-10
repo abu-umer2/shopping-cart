@@ -19,7 +19,7 @@ const ProductDetails = () => {
   };
   function handelAddToCart(product) {
     console.log("pro", product);
-    const user = sessionStorage.getItem("userAuth");
+    const user = sessionStorage.getItem("token");
     if (!user) {
       updateIsLogin(true);
     }

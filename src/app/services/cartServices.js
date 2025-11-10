@@ -3,7 +3,7 @@ import dbserver from "../dbserver";
 
 const getToken = () => {
   try {
-    const userData = sessionStorage.getItem("userAuth");
+    const userData = sessionStorage.getItem("token");
     return userData;
   } catch (error) {
     return null;

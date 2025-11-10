@@ -25,7 +25,7 @@ export default function Products() {
       <div className="row" style={{ display: "flex", flexWrap: "wrap" }}>
         {products.map((product) => {
           return (
-            <div key={product._id} className="col-md-3 mb-4">
+            <div key={product._id} className="col-sm-12 col-md-6 col-lg-3 mb-4">
               <ProductCard key={product._id} product={product} />
             </div>
           );
