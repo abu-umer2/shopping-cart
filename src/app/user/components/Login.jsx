@@ -25,7 +25,7 @@ const Login = ({ updateIsLogin }) => {
       ).then();
 
       dispatch(login(response.data));
-      // updateIsLogin(false);
+      updateIsLogin(false);
       const cartResponse = CartServices.getCart();
       dispatch(setCartItems(cartResponse.data.items));
       navigate(from, { replace: true });
