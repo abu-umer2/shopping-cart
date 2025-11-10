@@ -14,7 +14,15 @@ const cartSlice = createSlice({
       state.items = action.payload;
     },
     addTocart(state, action) {
-      state.items.push(action.payload);
+      const newItem = action.payload;
+      const existingItem = state.items.find(
+        (item) => item.productId === newItem.productId
+      );
+      if (existingItem) {
+        existingItem.quantity += newItem.quantity || 1;
+      } else {
+        state.items.push({ ...newItem, quantity: newItem.quantity || 1 });
+      }
     },
     deleteItem(state, action) {
       console.log("Before delete:", state.items.length);

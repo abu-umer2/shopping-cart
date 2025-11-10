@@ -22,7 +22,7 @@ const authSlice = createSlice({
     },
     openLoginModel(state, action) {
       state.showLoginModel = true;
-      state.redirectAfterLogin = action.payload || "/";
+      state.redirectAfterLogin = action.payload || "/user";
     },
     closeLoginModel(state) {
       state.showLoginModel = false;
