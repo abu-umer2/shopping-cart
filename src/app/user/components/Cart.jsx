@@ -10,16 +10,27 @@ import {
 import { useEffect } from "react";
 const Cart = () => {
   const dispatch = useDispatch();
-  const cart = useSelector((state) => state.cart);
+  const token = sessionStorage.getItem("token");
   useEffect(() => {
+    if (!token) return;
     const getCart = async () => {
-      const response = await CartServices.getCart();
-      dispatch(setCartItems(response.data.items));
-      console.log("cart", response.data.items);
+      try {
+        const response = await CartServices.getCart();
+        dispatch(setCartItems(response.data.items));
+        console.log("cart", response.data.items);
+      } catch (error) {
+        console.error(
+          "Failed to get cart",
+          error.response?.data || error.message
+        );
+      }
     };
 
     getCart();
-  }, [dispatch]);
+  }, [dispatch, token]);
+
+  const cart = useSelector((state) => state.cart);
+
   const removeItemFromCart = async (productId) => {
     try {
       console.log("Deleting product ID:", productId);

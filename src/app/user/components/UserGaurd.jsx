@@ -1,15 +1,18 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { openLoginModel } from "../data/authSlice";
 
 const UserGuard = () => {
-  const user = useSelector((state) => state.auth.user);
+  const token = sessionStorage.getItem("token");
   const location = useLocation();
-  console.log("userss", user);
-  return user ? (
-    <Outlet />
-  ) : (
-    <Navigate to="./login" replace state={{ from: location.pathname }} />
-  );
+  const dispatch = useDispatch();
+
+  if (!token) {
+    dispatch(openLoginModel(location.pathname));
+    return null;
+  }
+
+  return <Outlet />;
 };
 
 export default UserGuard;

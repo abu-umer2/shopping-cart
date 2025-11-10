@@ -3,8 +3,8 @@ import dbserver from "../dbserver";
 
 const getToken = () => {
   try {
-    const userData = sessionStorage.getItem("token");
-    return userData;
+    const token = sessionStorage.getItem("token") || null;
+    return token;
   } catch (error) {
     return null;
   }
@@ -13,6 +13,7 @@ const getToken = () => {
 const CartServices = {
   getCart() {
     const token = getToken();
+    if (!token) return Promise.resolve({ data: { items: [] } });
 
     return axios.get(`http://${dbserver.server}:${dbserver.port}/cart`, {
       headers: {

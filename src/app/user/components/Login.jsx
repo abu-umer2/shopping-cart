@@ -3,8 +3,8 @@ import Input from "../../shared/controls/Input";
 import Button from "../../shared/controls/Button";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProductServices from "../../services/productServices";
-import { useDispatch } from "react-redux";
-import { login } from "../data/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { closeLoginModel, login } from "../data/authSlice";
 import CartServices from "../../services/cartServices";
 import { setCartItems } from "../data/cartSlice";
 
@@ -14,21 +14,20 @@ const Login = ({ updateIsLogin }) => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
-  const from = location.state?.from || "/";
+  const redirectAfterLogin = useSelector(
+    (state) => state.auth.redirectAfterLogin
+  );
+
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await ProductServices.userLogin(
-        username,
-        password
-      ).then();
+      const response = await ProductServices.userLogin(username, password);
 
       dispatch(login(response.data));
-      updateIsLogin(false);
-      const cartResponse = CartServices.getCart();
+      const cartResponse = await CartServices.getCart();
       dispatch(setCartItems(cartResponse.data.items));
-      navigate(from, { replace: true });
+      dispatch(closeLoginModel());
+      navigate(redirectAfterLogin, { replace: true });
     } catch (error) {
       console.error(error);
 
