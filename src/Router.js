@@ -38,7 +38,7 @@ export default function Router() {
           <Route path="" element={<Landing />} />
           <Route path="productsList/:subId" element={<ProductsList />} />
           <Route path="productDetails" element={<ProductDetails />} />
-          <Route path="login" element={<Login />} />
+          {/* <Route path="login" element={<Login />} /> */}
           <Route path="siginup" element={<SignUp />} />
           <Route element={<UserGuard />}>
             <Route path="cart" element={<Cart />} />

@@ -7,19 +7,20 @@ import Login from "../components/Login";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import CartServices from "../../services/cartServices";
-import { setCartItems } from "../data/cartSlice";
-import { logout } from "../data/authSlice";
+import { emptyCart, setCartItems } from "../data/cartSlice";
+import { logout, openLoginModel } from "../data/authSlice";
 
 export default function Header() {
-  const [isLogin, updateIsLogin] = useState(false);
+  // const [isLogin, updateIsLogin] = useState(false);
   const [isOpen, updateIsOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const items = useSelector((state) => state.cart.items);
+  const showLogin = useSelector((state) => state.auth.showLoginModel);
 
   const admin = sessionStorage.getItem("adminAuth");
-  // const user = sessionStorage.getItem("token");
-  const user = useSelector((state) => state.auth.user);
+  const user = sessionStorage.getItem("token");
+  // const user = useSelector((state) => state.auth.user);
   console.log("authuser", user);
 
   useEffect(() => {
@@ -33,11 +34,7 @@ export default function Header() {
 
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
-      {isLogin && (
-        <CommomUtils.ShowDialog
-          childComponent={<Login updateIsLogin={updateIsLogin}></Login>}
-        />
-      )}
+      {showLogin && <CommomUtils.ShowDialog childComponent={<Login></Login>} />}
 
       <div className="container-fluid d-flex justify-content-between align-items-center">
         <i className="fa fa-opencart fa-lg text-white"></i>
@@ -115,6 +112,7 @@ export default function Header() {
                             className="dropdown-item text-danger"
                             onClick={() => {
                               dispatch(logout());
+                              dispatch(emptyCart());
                             }}
                           >
                             Logout
@@ -130,8 +128,7 @@ export default function Header() {
                 size="small"
                 className="btn btn-secondary border-0 px-2"
                 type="button"
-                onClick={() => updateIsLogin(true)}
-                s
+                onClick={() => dispatch(openLoginModel())}
               >
                 Login
               </Button>

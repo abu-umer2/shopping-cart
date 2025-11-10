@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   user: null,
-  error: null,
+  showLoginModel: false,
+  redirectAfterLogin: "/",
 };
 const authSlice = createSlice({
   name: "auth",
@@ -19,8 +20,16 @@ const authSlice = createSlice({
       sessionStorage.removeItem("token");
       sessionStorage.removeItem("user");
     },
+    openLoginModel(state, action) {
+      state.showLoginModel = true;
+      state.redirectAfterLogin = action.payload || "/";
+    },
+    closeLoginModel(state) {
+      state.showLoginModel = false;
+    },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, openLoginModel, closeLoginModel } =
+  authSlice.actions;
 export default authSlice.reducer;
