@@ -6,12 +6,14 @@ import Login from "./Login";
 import { useDispatch } from "react-redux";
 import CartServices from "../../services/cartServices";
 import { addTocart } from "../data/cartSlice";
-
+import ZoomImage from "./ZoomImage";
 const ProductDetails = () => {
   const location = useLocation();
+
+  const { product } = location.state || {};
+  const [mainImg, setMainImg] = useState(product.image);
   const navigate = useNavigate();
   const [isLogin, updateIsLogin] = useState(false);
-  const { product } = location.state || {};
   const dispatch = useDispatch();
 
   const handleBack = () => {
@@ -34,7 +36,7 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className="container row m-md-3 border border-2 rounded ">
+    <div className="container row m-md-2 border border-2 rounded ">
       {isLogin && (
         <div>
           <CommomUtils.ShowDialog childComponent={<Login></Login>} />
@@ -42,11 +44,48 @@ const ProductDetails = () => {
       )}
       <div className="row g-4">
         <div className="col-md-6 col-sm-12 col-sm-12 d-flex justify-content-center align-items-center ">
-          <img
-            src={product?.image}
-            alt={product?.name}
-            style={{ height: "500px" }}
-          />
+          <div className="ms-0 gap-5 d-flex justify-content-between">
+            <div className="">
+              <img
+                src={`http://localhost:1000/uploads/products/${product.image}`}
+                alt=""
+                style={{
+                  width: "80px",
+                  height: "80px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                }}
+                className="my-1 rounded-3 border border-black "
+                onMouseOver={() => setMainImg(product.image)}
+              />
+              {product.imageFiles?.map((image, index) => (
+                <div className="d-flex flex-column ">
+                  <img
+                    key={index}
+                    src={`http://localhost:1000/uploads/products/${image}`}
+                    alt=""
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                    }}
+                    className="my-1 rounded-3 border border-black "
+                    onMouseOver={() => setMainImg(image)}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="">
+              <ZoomImage
+                id="shownImg"
+                src={`http://localhost:1000/uploads/products/${mainImg}`}
+                style={{ height: "500px", width: "400px" }}
+                className="rounded-3 border border-black"
+              />
+            </div>
+          </div>
         </div>
         <div className="col-md-6 col-sm-12 d-flex flex-column justify-content-between p-md-3 gap-2">
           <h3 className="fw-bold mb-2 text-center text-md-start">

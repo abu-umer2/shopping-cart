@@ -7,7 +7,7 @@ const ProductCard = ({ product }) => {
       {product.image && (
         <img
           className="card-img-top"
-          src={product.image}
+          src={`http://localhost:1000/uploads/products/${product.image}`}
           alt={product.name}
           width="150px"
           height="200px"

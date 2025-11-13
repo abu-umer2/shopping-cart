@@ -93,7 +93,11 @@ const BestSelling = () => {
             <div key={product._id} className="px-2">
               <div className="bg-white rounded-xl shadow-md p-4 text-center">
                 <img
-                  src={product.image || "/placeholder.png"}
+                  src={
+                    product?.image
+                      ? `http://localhost:1000/uploads/products/${product.image}`
+                      : "/placeholder.png"
+                  }
                   alt={product.name}
                   className="h-48 w-full object-cover rounded-lg"
                 />

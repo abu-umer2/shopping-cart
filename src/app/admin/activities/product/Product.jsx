@@ -10,6 +10,7 @@ const Product = () => {
   const [price, setPrice] = useState("");
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+  const [images, setImages] = useState([]);
   const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [description, setDescription] = useState("");
@@ -77,6 +78,12 @@ const Product = () => {
       console.log("preview URL:", previewUrl);
     }
   };
+  const handleImagesChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImages(files);
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setImagePreview(previews);
+  };
   const validateForm = () => {
     const newErrors = {};
     if (!nameRef.current.value.trim()) {
@@ -137,6 +144,11 @@ const Product = () => {
         formData.append("image", imageFile);
       } else if (edit && selectedProduct.image) {
         formData.append("image", selectedProduct.image);
+      }
+      if (images && images.length > 0) {
+        images.forEach((file) => {
+          formData.append("imageFiles", file);
+        });
       }
       console.log("for", formData);
       try {
@@ -424,6 +436,31 @@ const Product = () => {
                         <input
                           type="file"
                           onChange={handleImageChange}
+                          style={{ width: "250px" }}
+                        />
+                        <div className="error-message">
+                          {errors.image && (
+                            <p className="text-danger">{errors.image}</p>
+                          )}
+                        </div>
+                      </div>
+                      {imagePreview && (
+                        <div>
+                          <img
+                            src={imagePreview || null}
+                            alt="Preview"
+                            style={{ width: "100px", height: "auto" }}
+                          />
+                        </div>
+                      )}
+
+                      {/* images */}
+                      <div className="d-flex align-items-center justify-content-between">
+                        <label>Images:</label>
+                        <input
+                          multiple
+                          type="file"
+                          onChange={handleImagesChange}
                           style={{ width: "250px" }}
                         />
                         <div className="error-message">
