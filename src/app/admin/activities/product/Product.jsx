@@ -10,13 +10,14 @@ const Product = () => {
   const [price, setPrice] = useState("");
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
-  const [images, setImages] = useState([]);
+  // const [images, setImages] = useState([]);
   const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [review, setReview] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  // const [imagesPreview, setImagesPreview] = useState([]);
   const [edit, setEdit] = useState(false);
   const [stock, setStock] = useState("");
   const [productType, setProductType] = useState("");
@@ -25,6 +26,9 @@ const Product = () => {
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
   const [errors, setErrors] = useState({});
+
+  const [currentImages, setCurrentImages] = useState([]);
+  const [newImages, setNewImages] = useState([]);
 
   const modalRef = useRef(null);
   const nameRef = useRef(null);
@@ -72,17 +76,25 @@ const Product = () => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file);
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-
-      console.log("preview URL:", previewUrl);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
   const handleImagesChange = (e) => {
     const files = Array.from(e.target.files);
-    setImages(files);
+    setNewImages((prev) => [...prev, ...files]);
+
     const previews = files.map((file) => URL.createObjectURL(file));
-    setImagePreview(previews);
+    setCurrentImages((prev) => [...prev, ...previews]);
+  };
+
+  const removeCurrentImage = (img) => {
+    setCurrentImages((prev) => prev.filter((i) => i !== img));
+  };
+
+  // Remove newly added image
+  const removeNewImage = (index) => {
+    setNewImages((prev) => prev.filter((_, i) => i !== index));
+    setCurrentImages((prev) => prev.filter((_, i) => i !== index));
   };
   const validateForm = () => {
     const newErrors = {};
@@ -145,14 +157,21 @@ const Product = () => {
       } else if (edit && selectedProduct.image) {
         formData.append("image", selectedProduct.image);
       }
-      if (images && images.length > 0) {
-        images.forEach((file) => {
+      if (newImages && newImages.length > 0) {
+        newImages.forEach((file) => {
           formData.append("imageFiles", file);
         });
       }
       console.log("for", formData);
       try {
         if (edit) {
+          const removeImages = selectedProduct.imageFiles.filter(
+            (img) => !currentImages.includes(img)
+          );
+          const formData = new FormData();
+          newImages.forEach((file) => formData.append("imageFiles", file));
+          if (removeImages.length > 0)
+            formData.append("removeImages", JSON.stringify(removeImages));
           await AuthServices.updateProduct(selectedProduct._id, formData);
 
           setEdit(false);
@@ -205,7 +224,8 @@ const Product = () => {
     setSize(pro?.size || "");
     setColor(pro?.color || "");
     setImagePreview(pro?.image || null);
-
+    setCurrentImages(pro?.imageFiles || []);
+    setNewImages([]);
     displayModal();
   }
   function displayModal() {
@@ -445,11 +465,19 @@ const Product = () => {
                         </div>
                       </div>
                       {imagePreview && (
-                        <div>
+                        <div style={{ marginBottom: "10px" }}>
                           <img
-                            src={imagePreview || null}
+                            src={
+                              `http://localhost:1000/uploads/products/${imagePreview}` ||
+                              null
+                            }
                             alt="Preview"
-                            style={{ width: "100px", height: "auto" }}
+                            style={{
+                              width: "100px",
+                              height: "auto",
+                              border: "1px solid #ccc",
+                              borderRadius: "4px",
+                            }}
                           />
                         </div>
                       )}
@@ -469,13 +497,42 @@ const Product = () => {
                           )}
                         </div>
                       </div>
-                      {imagePreview && (
-                        <div>
-                          <img
-                            src={imagePreview || null}
-                            alt="Preview"
-                            style={{ width: "100px", height: "auto" }}
-                          />
+                      {currentImages.length > 0 && (
+                        <div className="d-flex gap-2 flex-wrap mb-2 ">
+                          {currentImages.map((img, idx) => (
+                            <div key={idx} style={{ position: "relative" }}>
+                              <img
+                                src={`http://localhost:1000/uploads/products/${img}`}
+                                alt={`Current ${idx}`}
+                                style={{
+                                  width: "100px",
+                                  height: "100px",
+                                  objectFit: "cover",
+                                  border: "1px solid #ccc",
+                                  borderRadius: "20px",
+                                }}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => removeCurrentImage(img)}
+                                className="d-flex align-items-center justify-content-center"
+                                style={{
+                                  position: "absolute",
+                                  top: -4,
+                                  right: -2,
+                                  background: "red",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "50%",
+                                  width: "20px",
+                                  height: "20px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>

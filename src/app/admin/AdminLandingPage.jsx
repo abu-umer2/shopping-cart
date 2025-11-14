@@ -13,7 +13,6 @@ export default function AdminLanding() {
     try {
       const res = await AuthServices.CheckLogin(username, password);
       console.log(res.data);
-      alert("Login successful!");
       localStorage.setItem("adminAuth", 1);
       nav("/adminHome");
     } catch (error) {

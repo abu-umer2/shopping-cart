@@ -6,7 +6,8 @@ import Login from "./Login";
 import { useDispatch } from "react-redux";
 import CartServices from "../../services/cartServices";
 import { addTocart } from "../data/cartSlice";
-import ZoomImage from "./ZoomImage";
+import Magnifier from "react-magnifier";
+
 const ProductDetails = () => {
   const location = useLocation();
 
@@ -31,8 +32,6 @@ const ProductDetails = () => {
         dispatch(addTocart(product));
       })
       .catch((err) => console.error("Failed to sync cart:", err));
-
-    // ;
   }
 
   return (
@@ -78,11 +77,14 @@ const ProductDetails = () => {
             </div>
 
             <div className="">
-              <ZoomImage
-                id="shownImg"
+              <Magnifier
                 src={`http://localhost:1000/uploads/products/${mainImg}`}
-                style={{ height: "500px", width: "400px" }}
-                className="rounded-3 border border-black"
+                width={400}
+                height={500}
+                zoomFactor={0.8}
+                mgShape="square"
+                mgWidth={200}
+                mgHeight={200}
               />
             </div>
           </div>
