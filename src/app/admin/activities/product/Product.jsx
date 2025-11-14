@@ -10,14 +10,12 @@ const Product = () => {
   const [price, setPrice] = useState("");
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
-  // const [images, setImages] = useState([]);
   const [category, setCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [review, setReview] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
-  // const [imagesPreview, setImagesPreview] = useState([]);
   const [edit, setEdit] = useState(false);
   const [stock, setStock] = useState("");
   const [productType, setProductType] = useState("");
