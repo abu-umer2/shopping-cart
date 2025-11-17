@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Input from "../../shared/controls/Input";
 import Button from "../../shared/controls/Button";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ProductServices from "../../services/productServices";
 import { useDispatch, useSelector } from "react-redux";
 import { closeLoginModel, login } from "../data/authSlice";

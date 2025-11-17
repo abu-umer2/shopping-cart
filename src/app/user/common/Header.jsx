@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import CartServices from "../../services/cartServices";
 import { emptyCart, setCartItems } from "../data/cartSlice";
 import { logout, openLoginModel } from "../data/authSlice";
+import SearchBar from "../components/SearchBar";
 
 export default function Header() {
   // const [isLogin, updateIsLogin] = useState(false);
@@ -44,21 +45,7 @@ export default function Header() {
           id="mynavbar"
         >
           <div className="navbar-nav d-flex  gap-4 mx-auto items-center align-items-center">
-            <form className="d-flex">
-              <div className="d-flex bg-white rounded">
-                <input
-                  className="form-control me-2 border-0"
-                  type="text"
-                  placeholder="Search"
-                />
-                <button className="btn btn-white" type="button">
-                  <i
-                    className="fa fa-search fa-lg"
-                    style={{ color: "gray" }}
-                  ></i>
-                </button>
-              </div>
-            </form>
+            <SearchBar />
           </div>
         </div>
         <div className="d-flex gap-3 align-items-center">

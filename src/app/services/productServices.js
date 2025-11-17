@@ -47,6 +47,21 @@ const ProductServices = {
       payload
     );
   },
+  searchProduct(query) {
+    return axios.get(
+      `http://${dbserver.server}:${dbserver.port}/products/search?query=${query}`
+    );
+  },
+  searchCat(query) {
+    return axios.get(
+      `http://${dbserver.server}:${dbserver.port}/categories/search?query=${query}`
+    );
+  },
+  searchSub(query) {
+    return axios.get(
+      `http://${dbserver.server}:${dbserver.port}/sub-categories/search?query=${query}`
+    );
+  },
 };
 
 export default ProductServices;

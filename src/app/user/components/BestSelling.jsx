@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ProductServices from "../../services/productServices";
+import { useNavigate } from "react-router-dom";
 
 const BestSelling = () => {
   const [bestSelling, setBestSelling] = useState([]);
+
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchBestSelling = async () => {
       try {
@@ -84,14 +87,24 @@ const BestSelling = () => {
     ],
   };
 
+  const handleClick = (product) => {
+    navigate("./productDetails", { state: { product } });
+  };
+
   return (
     <div className=" bg-white pe-2 justify-content-center align-items-center">
       <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Best Selling Products</h2>
         <Slider {...settings}>
           {bestSelling.map((product) => (
-            <div key={product._id} className="px-2">
-              <div className="bg-white rounded-xl shadow-md p-4 text-center">
+            <div key={product._id} className="px-2 align-items-center">
+              <div
+                className="bg-white rounded-xl shadow-md p-4 align-items-center justify-content-center"
+                role="button"
+                onClick={() => {
+                  handleClick(product);
+                }}
+              >
                 <img
                   src={
                     product?.image
@@ -101,8 +114,12 @@ const BestSelling = () => {
                   alt={product.name}
                   className="h-48 w-full object-cover rounded-lg"
                 />
-                <h3 className="mt-2 font-semibold text-lg">{product.name}</h3>
-                <p className="text-gray-600">${product.price}</p>
+                <div className="d-flex flex-column align-items-center justify-content-center">
+                  <h3 className="mt-2 font-semibold text-lg text-center">
+                    {product.name}
+                  </h3>
+                  <p className="text-gray-600 text-center">${product.price}</p>
+                </div>
               </div>
             </div>
           ))}

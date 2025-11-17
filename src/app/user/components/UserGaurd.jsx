@@ -1,5 +1,5 @@
-import { useDispatch, useSelector } from "react-redux";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Outlet, useLocation } from "react-router-dom";
 import { openLoginModel } from "../data/authSlice";
 
 const UserGuard = () => {
