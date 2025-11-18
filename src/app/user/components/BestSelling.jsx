@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ProductServices from "../../services/productServices";
 import { useNavigate } from "react-router-dom";
-
+import "./bestSelling.css";
 const BestSelling = () => {
   const [bestSelling, setBestSelling] = useState([]);
 
@@ -31,16 +31,17 @@ const BestSelling = () => {
         className={className}
         style={{
           ...style,
-          left: "0px",
+          left: "0",
           right: "auto",
-          //   background: "#e2e8f0",
+          top: "40px",
+          // background: "#13325bff",
           padding: "0.5rem",
           borderRadius: "50%",
           zIndex: 1,
         }}
         onClick={onClick}
       >
-        <ChevronLeft size={20} color="gray" />
+        <ChevronLeft size={40} color="gray" />
       </button>
     );
   };
@@ -52,8 +53,10 @@ const BestSelling = () => {
         className={className}
         style={{
           ...style,
-          right: "0px",
+          right: "30px",
           left: "auto",
+          top: "40px",
+
           //   background: "#e2e8f0",
           padding: "0.5rem",
           borderRadius: "50%",
@@ -61,7 +64,7 @@ const BestSelling = () => {
         }}
         onClick={onClick}
       >
-        <ChevronRight size={20} color="gray" />
+        <ChevronRight size={40} color="gray" />
       </button>
     );
   };
@@ -93,13 +96,13 @@ const BestSelling = () => {
 
   return (
     <div className=" bg-white pe-2 justify-content-center align-items-center">
-      <div className="p-6">
-        <h2 className="text-2xl font-bold mb-4">Best Selling Products</h2>
+      <div className="p-6 ">
+        <h2 className="text-2xl font-bold ms-2 ">Best Selling Products</h2>
         <Slider {...settings}>
           {bestSelling.map((product) => (
             <div key={product._id} className="px-2 align-items-center">
               <div
-                className="bg-white rounded-xl shadow-md p-4 align-items-center justify-content-center"
+                className="d-flex flex-column bg-white rounded-xl shadow-md p-4 align-items-center justify-content-center img-wrapper "
                 role="button"
                 onClick={() => {
                   handleClick(product);
@@ -112,14 +115,10 @@ const BestSelling = () => {
                       : "/placeholder.png"
                   }
                   alt={product.name}
-                  className="h-48 w-full object-cover rounded-lg"
+                  className="h-48 w-full object-cover rounded-lg "
                 />
-                <div className="d-flex flex-column align-items-center justify-content-center">
-                  <h3 className="mt-2 font-semibold text-lg text-center">
-                    {product.name}
-                  </h3>
-                  <p className="text-gray-600 text-center">${product.price}</p>
-                </div>
+                <h3 className="mt-2 font-semibold text-sm ">{product.name}</h3>
+                <p className="text-gray-600 ">${product.price}</p>
               </div>
             </div>
           ))}

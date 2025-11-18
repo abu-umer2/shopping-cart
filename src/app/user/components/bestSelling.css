@@ -1,0 +1,14 @@
+.img-wrapper {
+    overflow: hidden;
+}
+
+.img-wrapper img {
+    transition: transform 0.3s ease;
+    width: 150px;
+    height: 100px;
+}
+
+.img-wrapper:hover img {
+    transform: scale(1.2);
+}
+

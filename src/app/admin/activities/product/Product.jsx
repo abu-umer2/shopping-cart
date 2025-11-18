@@ -160,6 +160,14 @@ const Product = () => {
           formData.append("imageFiles", file);
         });
       }
+
+      for (let [key, value] of formData.entries()) {
+        if (value instanceof File) {
+          console.log(key, value.name); // shows file name
+        } else {
+          console.log(key, value); // shows normal fields
+        }
+      }
       console.log("for", formData);
       try {
         if (edit) {
@@ -171,7 +179,9 @@ const Product = () => {
           if (removeImages.length > 0)
             formData.append("removeImages", JSON.stringify(removeImages));
           await AuthServices.updateProduct(selectedProduct._id, formData);
-
+          for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+          }
           setEdit(false);
           closeModal();
           alert("Product updated successfully!");

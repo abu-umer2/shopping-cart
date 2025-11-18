@@ -52,7 +52,12 @@ const AuthServices = {
     const payload = formData;
     return axios.patch(
       `http://${dbserver.server}:${dbserver.port}/products/${selectedProductId}`,
-      payload
+      payload,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
   },
 };

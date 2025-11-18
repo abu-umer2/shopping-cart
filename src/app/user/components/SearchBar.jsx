@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import ProductServices from "../../services/productServices";
+import { useNavigate } from "react-router-dom";
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState([]);
   const [debouncedQuery, setDebouncedQuery] = useState("");
-
+  const navigate = useNavigate();
   useEffect(() => {
     const t = setTimeout(() => {
       setDebouncedQuery(query);
@@ -36,8 +37,13 @@ const SearchBar = () => {
     fetchAll();
   }, [debouncedQuery]);
 
-  console.log("resu", result);
-  console.log("query", debouncedQuery);
+  console.log("result", result);
+
+  const navigateToItem = (item) => {
+    if (item.subCategories) {
+      navigate("");
+    }
+  };
 
   return (
     <form
@@ -77,6 +83,7 @@ const SearchBar = () => {
               style={{ listStyle: "none" }}
               className="d-flex align-items-center ps-2  my-2 gap-2 "
               role="button"
+              onClick={navigateToItem(item)}
             >
               {item.image ? (
                 <img
