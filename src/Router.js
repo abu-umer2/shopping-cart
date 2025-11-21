@@ -9,26 +9,21 @@ import Logout from "./app/admin/Logout";
 import AdminLanding from "./app/admin/AdminLandingPage";
 import Landing from "./app/user/components/Landing";
 import ProductsList from "./Products";
-import Login from "./app/user/components/Login";
+// import Login from "./app/user/components/Login";
 import SignUp from "./app/user/components/SignUp";
 import ProductDetails from "./app/user/components/ProductDetails";
 import Cart from "./app/user/components/Cart";
 import Profile from "./app/user/components/Profile";
 import UserGuard from "./app/user/components/UserGaurd";
+import AdminGuard from "./app/admin/services/AdminGuard";
 export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="" element={<AdminLanding />} />
-        <Route path="admin" element={<AdminLanding />} />
-        <Route
-          path="adminHome"
-          element={
-            <AdminGuard>
-              <Home></Home>
-            </AdminGuard>
-          }
-        >
+        {/* <Route path="" element={<AdminLanding />} /> */}
+        <Route path="admin-login" element={<AdminLanding />} />
+        <Route path="" element={<AdminGuard />}>
+          <Route index element={<Home />} />
           <Route path="cat" element={<Category />} />
           <Route path="subcat" element={<Subcat />} />
           <Route path="product" element={<Product />} />
@@ -49,11 +44,4 @@ export default function Router() {
       </Routes>
     </BrowserRouter>
   );
-}
-function AdminGuard({ children }) {
-  if (!localStorage.getItem("adminAuth")) {
-    return <Navigate to="./../admin" />;
-  } else {
-    return children;
-  }
 }

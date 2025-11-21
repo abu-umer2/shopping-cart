@@ -19,7 +19,7 @@ export default function Header() {
   const items = useSelector((state) => state.cart.items);
   const showLogin = useSelector((state) => state.auth.showLoginModel);
 
-  const admin = sessionStorage.getItem("adminAuth");
+  const admin = sessionStorage.getItem("admin");
   const user = sessionStorage.getItem("token");
   // const user = useSelector((state) => state.auth.user);
   console.log("authuser", user);
@@ -38,7 +38,11 @@ export default function Header() {
       {showLogin && <CommomUtils.ShowDialog childComponent={<Login></Login>} />}
 
       <div className="container-fluid d-flex justify-content-between align-items-center">
-        <i className="fa fa-opencart fa-lg text-white"></i>
+        <i
+          className="fa fa-opencart fa-lg text-white "
+          role="button"
+          onClick={() => navigate("./")}
+        ></i>
 
         <div
           className="collapse navbar-collapse justify-content-center "
@@ -111,14 +115,22 @@ export default function Header() {
                 </div>
               </div>
             ) : (
-              <Button
-                size="small"
-                className="btn btn-secondary border-0 px-2"
-                type="button"
-                onClick={() => dispatch(openLoginModel())}
-              >
-                Login
-              </Button>
+              <div>
+                <Button
+                  size="small"
+                  className="btn btn-secondary border-0 px-2"
+                  type="button"
+                  onClick={() => dispatch(openLoginModel())}
+                ></Button>
+                <Button
+                  size="small"
+                  className="btn btn-secondary border-0 px-2"
+                  type="button"
+                  onClick={() => dispatch(openLoginModel())}
+                >
+                  Login
+                </Button>
+              </div>
             )}
           </div>
         </div>

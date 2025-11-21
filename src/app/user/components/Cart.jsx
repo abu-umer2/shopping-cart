@@ -82,7 +82,7 @@ const Cart = () => {
           >
             <div className="d-flex align-items-center gap-2">
               <img
-                src={item.image}
+                src={`http://localhost:1000/uploads/products/${item.image}`}
                 alt=""
                 style={{ width: 80, height: 80, objectFit: "cover" }}
               />
@@ -118,7 +118,7 @@ const Cart = () => {
             </div>
 
             <div className="d-flex gap-5">
-              <p>{item.price}</p>
+              <p>{item.price * item.quantity}</p>
 
               <i
                 className="fa fa-trash-o"
@@ -128,7 +128,12 @@ const Cart = () => {
             </div>
           </div>
         ))}
-
+        <p className="fw-bold text-center mt-3 ">
+          Total Amount:
+          <span className="border m-2 border-2 border-black p-2 rounded-2">
+            {cart.cartTotoalAmount}
+          </span>
+        </p>
         <div className="text-center">
           <Button size="small" className="m-3" onClick={clearCart}>
             Clear Cart

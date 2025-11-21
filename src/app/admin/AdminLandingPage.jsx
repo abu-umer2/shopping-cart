@@ -3,18 +3,23 @@ import Button from "../shared/controls/Button";
 import { useNavigate } from "react-router-dom";
 import Input from "../shared/controls/Input";
 import AuthServices from "./services/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { adminLogin } from "../user/data/admitAuthSlice";
 export default function AdminLanding() {
-  const nav = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // const redirectAfterLogin = useSelector(
+  //   (state) => state.adminAuth.redirectAfterLogin
+  // );
   const login = async (e) => {
     e.preventDefault();
     try {
       const res = await AuthServices.CheckLogin(username, password);
-      console.log(res.data);
-      localStorage.setItem("adminAuth", 1);
-      nav("/adminHome");
+      dispatch(adminLogin(res.data));
+      console.log("res", res.data);
+      navigate("../");
     } catch (error) {
       console.error(error);
 

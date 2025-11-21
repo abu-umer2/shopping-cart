@@ -29,7 +29,8 @@ const ProductDetails = () => {
     CartServices.addItemToCart(product)
       .then((res) => {
         console.log("Cart synced with backend:", res.data);
-        dispatch(addTocart(product));
+        console.log("back", res.data);
+        dispatch(addTocart(res.data));
       })
       .catch((err) => console.error("Failed to sync cart:", err));
   }

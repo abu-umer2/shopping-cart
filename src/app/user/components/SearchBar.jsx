@@ -78,7 +78,7 @@ const SearchBar = () => {
         }}
       >
         {result.map((item) => (
-          <ul key={item._id} style={{ padding: 0, margin: 0 }}>
+          <ul key={item._id} style={{ padding: 0, margin: 0 }} className="">
             <li
               style={{ listStyle: "none" }}
               className="d-flex align-items-center ps-2  my-2 gap-2 "

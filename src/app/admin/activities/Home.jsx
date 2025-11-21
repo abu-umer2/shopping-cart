@@ -6,7 +6,7 @@ export default function Home() {
     <div>
       <Nav />
       <div className="container">
-        <Outlet></Outlet>
+        <Outlet />
       </div>
     </div>
   );

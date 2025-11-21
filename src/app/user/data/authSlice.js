@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   user: null,
   showLoginModel: false,
-  redirectAfterLogin: "/",
+  redirectAfterLogin: "/user",
 };
 const authSlice = createSlice({
   name: "auth",

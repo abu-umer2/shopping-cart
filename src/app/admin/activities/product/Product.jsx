@@ -89,7 +89,6 @@ const Product = () => {
     setCurrentImages((prev) => prev.filter((i) => i !== img));
   };
 
-  // Remove newly added image
   const removeNewImage = (index) => {
     setNewImages((prev) => prev.filter((_, i) => i !== index));
     setCurrentImages((prev) => prev.filter((_, i) => i !== index));
@@ -163,9 +162,9 @@ const Product = () => {
 
       for (let [key, value] of formData.entries()) {
         if (value instanceof File) {
-          console.log(key, value.name); // shows file name
+          console.log(key, value.name);
         } else {
-          console.log(key, value); // shows normal fields
+          console.log(key, value);
         }
       }
       console.log("for", formData);
@@ -579,3 +578,371 @@ const Product = () => {
 };
 
 export default Product;
+
+// import { useEffect, useState } from "react";
+// import { useForm } from "react-hook-form";
+// import Button from "../../../shared/controls/Button";
+// import Input from "../../../shared/controls/Input";
+// import ProductsTable from "./ProductsTable";
+// import Modal from "bootstrap/js/dist/modal";
+// import AuthServices from "../../services/auth";
+
+// const Product = () => {
+//   const [products, setProducts] = useState([]);
+//   const [categories, setCategories] = useState([]);
+//   const [subCategories, setSubCategories] = useState([]);
+//   const [currentImages, setCurrentImages] = useState([]);
+//   const [newImages, setNewImages] = useState([]);
+//   const [imagePreview, setImagePreview] = useState(null);
+//   const [selectedProduct, setSelectedProduct] = useState(null);
+//   const [edit, setEdit] = useState(false);
+
+//   // ✔ react-hook-form
+//   const {
+//     register,
+//     handleSubmit,
+//     reset,
+//     watch,
+//     setValue,
+//     formState: { errors },
+//   } = useForm();
+
+//   const categoryWatch = watch("categoriesId");
+
+//   // ============================
+//   // Fetch products + categories
+//   // ============================
+//   const fetchProducts = async () => {
+//     try {
+//       const res = await AuthServices.fetchProducts();
+//       setProducts(res.data);
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   };
+
+//   useEffect(() => {
+//     const fetchCategories = async () => {
+//       try {
+//         const res = await AuthServices.fetchCategories();
+//         setCategories(res.data);
+//       } catch (err) {
+//         console.error(err);
+//       }
+//     };
+
+//     fetchProducts();
+//     fetchCategories();
+//   }, []);
+
+//   useEffect(() => {
+//     if (!categoryWatch) return;
+
+//     const fetchSubCategories = async () => {
+//       try {
+//         const res = await AuthServices.fetchSubCategories(categoryWatch);
+//         setSubCategories(res.data);
+//       } catch (err) {
+//         console.error(err);
+//       }
+//     };
+
+//     fetchSubCategories();
+//   }, [categoryWatch]);
+
+//   // ============================
+//   // Image Handlers
+//   // ============================
+//   const handleMainImage = (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//       setImagePreview(URL.createObjectURL(file));
+//       setValue("image", file);
+//     }
+//   };
+
+//   const handleImagesChange = (e) => {
+//     const files = Array.from(e.target.files);
+//     setNewImages((prev) => [...prev, ...files]);
+//   };
+
+//   const removeExistingImage = (img) => {
+//     setCurrentImages((prev) => prev.filter((i) => i !== img));
+//   };
+
+//   // ============================
+//   // Submit (Create + Update)
+//   // ============================
+//   const onSubmit = async (data) => {
+//     try {
+//       const formData = new FormData();
+
+//       Object.keys(data).forEach((key) => {
+//         if (key !== "image" && key !== "imageFiles") {
+//           formData.append(key, data[key]);
+//         }
+//       });
+
+//       // Main image
+//       if (data.image instanceof File) {
+//         formData.append("image", data.image);
+//       } else if (edit && selectedProduct.image) {
+//         formData.append("image", selectedProduct.image);
+//       }
+
+//       // New imageFiles
+//       newImages.forEach((file) => {
+//         formData.append("imageFiles", file);
+//       });
+
+//       // Removed old images
+//       if (edit && selectedProduct?.imageFiles) {
+//         const removedImages = selectedProduct.imageFiles.filter(
+//           (img) => !currentImages.includes(img)
+//         );
+
+//         if (removedImages.length > 0) {
+//           formData.append("removeImages", JSON.stringify(removedImages));
+//         }
+//       }
+
+//       // CREATE
+//       if (!edit) {
+//         await AuthServices.createProduct(formData);
+//         alert("Product created successfully!");
+//       }
+
+//       // UPDATE
+//       if (edit) {
+//         await AuthServices.updateProduct(selectedProduct._id, formData);
+//         alert("Product updated successfully!");
+//       }
+
+//       closeModal();
+//       resetForm();
+//       fetchProducts();
+//     } catch (err) {
+//       console.error(err);
+//       alert("Error saving product");
+//     }
+//   };
+
+//   // ============================
+//   // Load product in modal
+//   // ============================
+//   const loadUpdates = (pro) => {
+//     setEdit(true);
+//     setSelectedProduct(pro);
+
+//     reset(pro); // Loads data into react-form
+
+//     setImagePreview(pro.image);
+//     setCurrentImages(pro.imageFiles || []);
+//     setNewImages([]);
+
+//     displayModal();
+//   };
+
+//   // ============================
+//   // Modal Helpers
+//   // ============================
+//   const displayModal = () => {
+//     const myModal = new Modal(document.getElementById("myModal"));
+//     myModal.show();
+//   };
+
+//   const closeModal = () => {
+//     const modalEl = document.getElementById("myModal");
+//     const modal = Modal.getInstance(modalEl);
+//     modal.hide();
+//   };
+
+//   const resetForm = () => {
+//     reset();
+//     setImagePreview(null);
+//     setCurrentImages([]);
+//     setNewImages([]);
+//     setEdit(false);
+//   };
+
+//   return (
+//     <div>
+//       <ProductsTable
+//         products={products}
+//         updateMethod={loadUpdates}
+//         setEdit={setEdit}
+//       />
+
+//       <Button
+//         type="button"
+//         size="small"
+//         onClick={() => {
+//           resetForm();
+//           displayModal();
+//         }}
+//       >
+//         Add Product
+//       </Button>
+
+//       {/* MODAL */}
+//       <div className="modal" id="myModal" data-bs-backdrop="static">
+//         <div className="modal-dialog modal-xl modal-dialog-centered">
+//           <div className="modal-content">
+//             <div className="modal-body">
+//               <form onSubmit={handleSubmit(onSubmit)}>
+//                 <div className="row">
+//                   {/* LEFT SIDE */}
+//                   <div className="col-6">
+//                     {/* NAME */}
+//                     <label>Name</label>
+//                     <Input
+//                       {...register("name", { required: "Name required" })}
+//                       className="form-control"
+//                     />
+//                     {errors.name && (
+//                       <p className="text-danger">{errors.name.message}</p>
+//                     )}
+
+//                     {/* CATEGORY */}
+//                     <label>Category</label>
+//                     <select
+//                       {...register("categoriesId", {
+//                         required: "Category required",
+//                       })}
+//                       className="form-select"
+//                     >
+//                       <option value="">Select</option>
+//                       {categories.map((c) => (
+//                         <option key={c._id} value={c._id}>
+//                           {c.name}
+//                         </option>
+//                       ))}
+//                     </select>
+
+//                     {/* SIZE */}
+//                     <label>Size</label>
+//                     <Input
+//                       {...register("size", { required: "Size required" })}
+//                       className="form-control"
+//                     />
+
+//                     {/* PRODUCT TYPE */}
+//                     <label>Product Type</label>
+//                     <select
+//                       {...register("productType")}
+//                       className="form-select"
+//                     >
+//                       <option value="">Select</option>
+//                       <option value="available">Available</option>
+//                       <option value="best_selling">Best Selling</option>
+//                       <option value="upcoming">Upcoming</option>
+//                     </select>
+
+//                     {/* DESCRIPTION */}
+//                     <label>Description</label>
+//                     <textarea
+//                       {...register("description", {
+//                         required: "Description required",
+//                       })}
+//                       className="form-control"
+//                     />
+//                   </div>
+
+//                   {/* RIGHT SIDE */}
+//                   <div className="col-6">
+//                     {/* PRICE */}
+//                     <label>Price</label>
+//                     <Input
+//                       {...register("price", { required: true })}
+//                       className="form-control"
+//                     />
+
+//                     {/* SUB CATEGORY */}
+//                     <label>Sub Category</label>
+//                     <select
+//                       {...register("subCategoriesId")}
+//                       className="form-select"
+//                     >
+//                       <option value="">Select</option>
+//                       {subCategories.map((s) => (
+//                         <option key={s._id} value={s._id}>
+//                           {s.name}
+//                         </option>
+//                       ))}
+//                     </select>
+
+//                     {/* COLOR */}
+//                     <label>Color</label>
+//                     <Input {...register("color")} className="form-control" />
+
+//                     {/* STOCK */}
+//                     <label>Stock</label>
+//                     <Input
+//                       {...register("stock", { required: true })}
+//                       className="form-control"
+//                     />
+
+//                     {/* MAIN IMAGE */}
+//                     <label>Main Image</label>
+//                     <input type="file" onChange={handleMainImage} />
+
+//                     {imagePreview && (
+//                       <img
+//                         src={`http://localhost:1000/uploads/products/${imagePreview}`}
+//                         width="120"
+//                       />
+//                     )}
+
+//                     {/* MULTIPLE IMAGES */}
+//                     <label>Images</label>
+//                     <input type="file" multiple onChange={handleImagesChange} />
+
+//                     {/* Show existing images */}
+//                     {currentImages.map((img, idx) => (
+//                       <div
+//                         key={idx}
+//                         style={{
+//                           position: "relative",
+//                           display: "inline-block",
+//                         }}
+//                       >
+//                         <img
+//                           src={`http://localhost:1000/uploads/products/${img}`}
+//                           width="100"
+//                         />
+//                         <button
+//                           type="button"
+//                           onClick={() => removeExistingImage(img)}
+//                         >
+//                           ×
+//                         </button>
+//                       </div>
+//                     ))}
+//                   </div>
+//                 </div>
+
+//                 <div className="d-flex justify-content-center gap-3 mt-3">
+//                   <Button size="small" type="submit">
+//                     {edit ? "Update" : "Create"}
+//                   </Button>
+//                   <Button
+//                     type="button"
+//                     variant="close"
+//                     onClick={() => {
+//                       resetForm();
+//                       closeModal();
+//                     }}
+//                   >
+//                     Close
+//                   </Button>
+//                 </div>
+//               </form>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Product;
