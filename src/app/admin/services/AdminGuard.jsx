@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 function AdminGuard() {
-  const admin = sessionStorage.getItem("adminToken");
+  const admin = sessionStorage.getItem("admin");
   console.log("admin", admin);
 
   return admin ? (

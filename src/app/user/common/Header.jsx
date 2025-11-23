@@ -5,7 +5,7 @@ import userimg from "../../assits/banner2.jpg";
 import CommomUtils from "../common/utils";
 import Login from "../components/Login";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CartServices from "../../services/cartServices";
 import { emptyCart, setCartItems } from "../data/cartSlice";
 import { logout, openLoginModel } from "../data/authSlice";
@@ -71,13 +71,14 @@ export default function Header() {
             onClick={() => updateIsOpen((prev) => !prev)}
           >
             {user || admin ? (
-              <div>
+              <div className="d-flex gap-2">
                 <img
                   className="rounded rounded-circle"
                   src={userimg}
                   alt="img"
                   style={{ width: "30px", height: "30px" }}
                 />
+
                 <div className="dropdown">
                   {isOpen && (
                     <div>
@@ -98,6 +99,13 @@ export default function Header() {
                         <li>
                           <button className="dropdown-item">Orders</button>
                         </li>
+                        {admin && (
+                          <li>
+                            <Link to="../" className="dropdown-item">
+                              Admin Dashboard
+                            </Link>
+                          </li>
+                        )}
                         <li>
                           <button
                             className="dropdown-item text-danger"
@@ -115,22 +123,14 @@ export default function Header() {
                 </div>
               </div>
             ) : (
-              <div>
-                <Button
-                  size="small"
-                  className="btn btn-secondary border-0 px-2"
-                  type="button"
-                  onClick={() => dispatch(openLoginModel())}
-                ></Button>
-                <Button
-                  size="small"
-                  className="btn btn-secondary border-0 px-2"
-                  type="button"
-                  onClick={() => dispatch(openLoginModel())}
-                >
-                  Login
-                </Button>
-              </div>
+              <Button
+                size="small"
+                className="btn btn-secondary border-0 px-2"
+                type="button"
+                onClick={() => dispatch(openLoginModel())}
+              >
+                Login
+              </Button>
             )}
           </div>
         </div>

@@ -34,6 +34,7 @@ const cartSlice = createSlice({
         existingItem.quantity += newItem.quantity || 1;
       } else {
         state.items.push({ ...newItem, quantity: newItem.quantity || 1 });
+        state.items.cartTotalQuantity += 1;
       }
       calculateTotals(state);
     },
@@ -43,6 +44,7 @@ const cartSlice = createSlice({
         (item) => item.productId !== action.payload
       );
       calculateTotals(state);
+      state.items.cartTotalQuantity -= 1;
 
       console.log("After delete:", state.items);
     },

@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 export default function Logout() {
-  localStorage.clear();
+  sessionStorage.removeItem("admin");
+  sessionStorage.removeItem("adminToken");
   let nav = useNavigate();
   useEffect(() => {
-    nav("./../../admin");
+    nav("./../../admin-login");
   });
-  return <div>
-    Logout success.
-  </div>;
+  return <div>Logout success.</div>;
 }

@@ -3,11 +3,14 @@ import Input from "../../../shared/controls/Input";
 import Button from "../../../shared/controls/Button";
 import Modal from "bootstrap/js/dist/modal";
 import AuthServices from "../../services/auth";
+import CategoriesTable from "./CategoriesTable";
+import SearchFun from "../components/SearchFun";
 
-export default function Category() {
+export default function Categories() {
   const [cat, setCat] = useState("");
   // const [isActive, setIsActive] = useState(true);
   const [categories, setCategories] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState(categories);
 
   useEffect(() => {
     AuthServices.fetchCategories().then((res) => setCategories(res.data));
@@ -48,35 +51,9 @@ export default function Category() {
 
   return (
     <div className="container d-flex flex-column mt-5 justify-content-center align-items-center">
-      <div className="container rounded mt-2">
-        <table className="table table-bordered">
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Name</th>
-              <th>Sub-Categories</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories.map((cat) => (
-              <tr>
-                <td>{cat._id}</td>
-                <td>{cat.name}</td>
-                <td>
-                  {cat.subCategories.length > 0 ? (
-                    <ul>
-                      {cat.subCategories.map((sub) => (
-                        <li key={sub._id}>{sub.name}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <span>no categories found</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="d-flex flex-column container rounded mt-2 align-items-center justify-content-center">
+        <SearchFun items={categories} onFilter={setFilteredCategories} />
+        <CategoriesTable categories={filteredCategories} />
         <div className="d-flex justify-content-center">
           <Button
             type="button"

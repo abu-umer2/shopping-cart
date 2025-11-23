@@ -35,7 +35,7 @@ const Nav = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="product">
+                  <Link className="dropdown-item" to="products">
                     Product
                   </Link>
                 </li>
@@ -82,6 +82,11 @@ const Nav = () => {
                   <Link className="dropdown-item"> A third link</Link>
                 </li>
               </ul>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="./user">
+                User Dashboard
+              </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="logout">

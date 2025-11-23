@@ -3,12 +3,16 @@ import Input from "../../../shared/controls/Input";
 import Button from "../../../shared/controls/Button";
 import AuthServices from "../../services/auth";
 import Modal from "bootstrap/js/dist/modal";
+import SubCategoriesTable from "./SubCategoriesTable";
+import SearchFun from "../components/SearchFun";
 
-export default function Subcat() {
+export default function SubCategories() {
   const [subCat, setSunCat] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [catigories, setCatigories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
+  const [felteredSubCategories, setFelteredSubCategories] =
+    useState(subCategories);
 
   useEffect(() => {
     try {
@@ -64,25 +68,9 @@ export default function Subcat() {
     }
   };
   return (
-    <div className="d-flex flex-column justify-content-center items-center">
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Categories</th>
-          </tr>
-        </thead>
-        <tbody>
-          {subCategories.map((sub) => (
-            <tr key={sub._id}>
-              <td>{sub._id}</td>
-              <td>{sub.name}</td>
-              <td>{sub.categoryId}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="d-flex flex-column justify-content-center align-items-center">
+      <SearchFun items={subCategories} onFilter={setFelteredSubCategories} />
+      <SubCategoriesTable subCategories={felteredSubCategories} />
 
       <div className="d-flex justify-content-center">
         <Button
