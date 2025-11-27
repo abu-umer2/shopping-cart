@@ -1,25 +1,32 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import ProductServices from "./app/services/productServices";
 import ProductCard from "./app/user/components/ProductCard";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
-  const { subId } = useParams();
+  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+
+  const type = searchParams.get("type");
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await ProductServices.fetchProductsBySub(subId);
-        setProducts(res.data);
-        console.log(res.data);
+        let res;
+        if (type === "cat") {
+          res = await ProductServices.fetchProductsByCat(id);
+        } else if (type === "sub") {
+          res = await ProductServices.fetchProductsBySub(id);
+        }
+        setProducts(res?.data || []);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
 
-    if (subId) fetchProducts();
-  }, [subId]);
+    fetchProducts();
+  }, [id, type]);
   return (
     <div className="container mt-4 ">
       <div className="row" style={{ display: "flex", flexWrap: "wrap" }}>

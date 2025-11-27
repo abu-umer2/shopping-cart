@@ -8,8 +8,11 @@ import {
   updateQuantity,
 } from "../data/cartSlice";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
   useEffect(() => {
     if (!token) return;
@@ -50,6 +53,7 @@ const Cart = () => {
 
       await CartServices.clearCart();
       dispatch(emptyCart());
+      navigate("../");
     } catch (error) {
       console.error(
         "Error removing item:",

@@ -9,6 +9,11 @@ const ProductServices = {
       `http://${dbserver.server}:${dbserver.port}/products/sub/${subId}`
     );
   },
+  fetchProductsByCat(id) {
+    return axios.get(
+      `http://${dbserver.server}:${dbserver.port}/products/cat/${id}`
+    );
+  },
   fetchCategories() {
     return axios.get(`http://${dbserver.server}:${dbserver.port}/categories`);
   },
