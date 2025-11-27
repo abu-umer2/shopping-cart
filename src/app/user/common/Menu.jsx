@@ -46,7 +46,10 @@ export default function Menu() {
                         const product_path = "productsList/" + sub._id;
                         return (
                           <li key={sub._id}>
-                            <Link className="dropdown-item" to={product_path}>
+                            <Link
+                              className="dropdown-item"
+                              to={`productsList/${sub._id}?type=sub`}
+                            >
                               {capitalizeFirstLetter(sub.name)}
                             </Link>
                           </li>

@@ -5,7 +5,7 @@ import { useState } from "react";
 import Login from "./Login";
 import { useDispatch } from "react-redux";
 import CartServices from "../../services/cartServices";
-import { addTocart } from "../data/cartSlice";
+import { addTocart, setCartItems } from "../data/cartSlice";
 import Magnifier from "react-magnifier";
 
 const ProductDetails = () => {
@@ -28,9 +28,7 @@ const ProductDetails = () => {
     }
     CartServices.addItemToCart(product)
       .then((res) => {
-        console.log("Cart synced with backend:", res.data);
-        console.log("back", res.data);
-        dispatch(addTocart(res.data));
+        dispatch(setCartItems(res.data.items));
       })
       .catch((err) => console.error("Failed to sync cart:", err));
   }
