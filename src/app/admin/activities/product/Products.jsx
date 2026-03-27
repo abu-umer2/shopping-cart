@@ -13,7 +13,6 @@ const Products = () => {
   const [subCategories, setSubCategories] = useState([]);
   const [currentImages, setCurrentImages] = useState([]);
   const [newImages, setNewImages] = useState([]);
-  const [imagePreview, setImagePreview] = useState(null);
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [edit, setEdit] = useState(false);
@@ -68,14 +67,6 @@ const Products = () => {
     fetchSubCategories();
   }, [categoryWatch]);
 
-  const handleMainImage = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImagePreview(URL.createObjectURL(file));
-      setValue("image", file);
-    }
-  };
-
   const handleImagesChange = (e) => {
     const files = Array.from(e.target.files);
     const imagePreviews = files.map((file) => URL.createObjectURL(file));
@@ -101,11 +92,6 @@ const Products = () => {
           formData.append(key, data[key]);
         }
       });
-      if (data.image instanceof File) {
-        formData.append("image", data.image);
-      } else if (edit && selectedProduct.image) {
-        formData.append("image", selectedProduct.image);
-      }
 
       newImages.forEach((file) => {
         formData.append("imageFiles", file);
@@ -152,7 +138,6 @@ const Products = () => {
     setTimeout(() => {
       setValue("subCategoriesId", pro?.subCategoriesId?._id || "");
     }, 200);
-    setImagePreview(pro.image);
     setCurrentImages(pro.imageFiles || []);
     setNewImages([]);
 
@@ -172,7 +157,6 @@ const Products = () => {
 
   const resetForm = () => {
     reset();
-    setImagePreview(null);
     setCurrentImages([]);
     setNewImages([]);
     setEdit(false);
@@ -252,30 +236,6 @@ const Products = () => {
                       })}
                       className="form-control"
                     />
-                    <div className="mb-3">
-                      <label for="formFileSm" className="form-label">
-                        Main Image
-                      </label>
-                      <input
-                        className="form-control form-control-sm"
-                        id="formFileSm"
-                        type="file"
-                        onChange={handleMainImage}
-                      />
-                    </div>
-
-                    {imagePreview && (
-                      <img
-                        src={
-                          edit && !imagePreview.startsWith("blob")
-                            ? `http://localhost:1000/uploads/products/${imagePreview}`
-                            : imagePreview
-                        }
-                        width="70px"
-                        height="70px"
-                        className="border border-2 border-black rounded-2"
-                      />
-                    )}
                   </div>
 
                   <div className="col-6">
@@ -307,7 +267,7 @@ const Products = () => {
                       className="form-control"
                     />
 
-                    <label for="formFileSm" className="form-label">
+                    <label htmlFor="formFileSm" className="form-label">
                       Images
                     </label>
                     <input

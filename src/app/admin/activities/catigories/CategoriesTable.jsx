@@ -1,5 +1,5 @@
 import Button from "../../../shared/controls/Button";
-const CategoriesTable = ({ categories, updateMethod, setEdit }) => {
+const CategoriesTable = ({ categories, onEdit }) => {
   return (
     <div className="container mt-3">
       <table className="table table-striped">
@@ -7,13 +7,14 @@ const CategoriesTable = ({ categories, updateMethod, setEdit }) => {
           <tr>
             <th>Category Name</th>
             <th>Sub-categories</th>
+            <th>image</th>
 
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {categories.map((cat) => (
-            <tr>
+            <tr key={cat._id}>
               <td>{cat.name}</td>
               <td>
                 {cat.subCategories.length > 0 ? (
@@ -27,8 +28,17 @@ const CategoriesTable = ({ categories, updateMethod, setEdit }) => {
                 )}
               </td>
               <td>
+                <img
+                  src={`http://localhost:1000/uploads/categories/${cat.image}`}
+                  alt=""
+                  width={100}
+                  height={100}
+                />
+              </td>
+
+              <td>
                 <div className="d-flex gap-2">
-                  <Button className="" size="small">
+                  <Button className="" size="small" onClick={() => onEdit(cat)}>
                     Update
                   </Button>
                 </div>

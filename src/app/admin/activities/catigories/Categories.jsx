@@ -8,25 +8,56 @@ import SearchFun from "../components/SearchFun";
 
 export default function Categories() {
   const [cat, setCat] = useState("");
+  const [image, setImage] = useState(null);
+  const [isEdit, setIsEdit] = useState(false);
   // const [isActive, setIsActive] = useState(true);
   const [categories, setCategories] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
+
   const [filteredCategories, setFilteredCategories] = useState(categories);
 
   useEffect(() => {
     AuthServices.fetchCategories().then((res) => setCategories(res.data));
   }, []);
+  const fetchCategories = async () => {
+    const res = await AuthServices.fetchCategories();
+    setCategories(res.data);
+    setFilteredCategories(res.data);
+    console.log("cat", categories);
+  };
+  const resetForm = () => {
+    setCat("");
+    setImage(null);
+    setSelectedId(null);
+    setIsEdit(false);
+  };
   const onSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await AuthServices.createCategory({ name: cat });
-
-      const res = await AuthServices.fetchCategories();
-      setCategories(res.data);
-      console.log(res.data);
+      const formData = new FormData();
+      formData.append("name", cat);
+      if (image) {
+        formData.append("image", image);
+      }
+      if (isEdit) {
+        console.log("form", formData);
+        await AuthServices.updateCategory(formData, selectedId);
+      } else {
+        await AuthServices.createCategory(formData);
+      }
+      await fetchCategories();
+      closeModal();
+      resetForm();
     } catch (err) {
       console.error("Error creating category:", err);
     }
+  };
+  const handleEdit = (category) => {
+    setSelectedId(category._id);
+    setCat(category.name);
+    setIsEdit(true);
+    displayModal();
   };
 
   function displayModal() {
@@ -53,7 +84,7 @@ export default function Categories() {
     <div className="container d-flex flex-column mt-5 justify-content-center align-items-center">
       <div className="d-flex flex-column container rounded mt-2 align-items-center justify-content-center">
         <SearchFun items={categories} onFilter={setFilteredCategories} />
-        <CategoriesTable categories={filteredCategories} />
+        <CategoriesTable categories={filteredCategories} onEdit={handleEdit} />
         <div className="d-flex justify-content-center">
           <Button
             type="button"
@@ -86,6 +117,13 @@ export default function Categories() {
                       onChange={(e) => setCat(e.target.value)}
                     />
                   </div>
+                  <div>
+                    <label>Image</label>
+                    <Input
+                      type="file"
+                      onChange={(e) => setImage(e.target.files[0])}
+                    />
+                  </div>
 
                   <Button
                     type="submit"
@@ -94,7 +132,7 @@ export default function Categories() {
                     className="px-5 mt-2"
                     onClick={onSubmit}
                   >
-                    ADD
+                    {isEdit ? "Update" : "ADD"}
                   </Button>
                 </form>
               </div>

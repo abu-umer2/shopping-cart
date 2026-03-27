@@ -16,6 +16,7 @@ import AdminGuard from "./app/admin/services/AdminGuard";
 import Products from "./app/admin/activities/product/Products";
 import Categories from "./app/admin/activities/catigories/Categories";
 import SubCategories from "./app/admin/activities/subCategories/Subcat";
+import Orders from "./app/admin/activities/orders/Orders";
 export default function Router() {
   return (
     <BrowserRouter>
@@ -23,11 +24,14 @@ export default function Router() {
         {/* <Route path="" element={<AdminLanding />} /> */}
         <Route path="admin-login" element={<AdminLanding />} />
         <Route path="" element={<AdminGuard />}>
-          <Route index element={<Home />} />
-          <Route path="cat" element={<Categories />} />
-          <Route path="subcat" element={<SubCategories />} />
-          <Route path="products" element={<Products />} />
-          <Route path="logout" element={<Logout />} />
+          <Route element={<Home />}>
+            <Route index element={<Products />} />
+            <Route path="cat" element={<Categories />} />
+            <Route path="subcat" element={<SubCategories />} />
+            <Route path="products" element={<Products />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="logout" element={<Logout />} />
+          </Route>
         </Route>
         <Route path="user" element={<UserLanding />}>
           <Route path="" element={<Landing />} />

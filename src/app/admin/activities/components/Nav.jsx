@@ -1,8 +1,16 @@
 import { Link } from "react-router-dom";
 
-const Nav = () => {
+const Nav = ({ sidebarWidth }) => {
   return (
-    <nav className="navbar navbar-expand-sm bg-dark navbar-dark">
+    <nav
+      className="navbar navbar-expand-sm bg-light text-black  position-fixed top-0"
+      style={{
+        left: `${sidebarWidth}px`,
+        width: `calc(100% - ${sidebarWidth}px)`,
+        transition: "all 0.3s ease",
+        zIndex: 1030,
+      }}
+    >
       <div className="container-fluid">
         <Link className="navbar-brand"> Admin</Link>
         <button

@@ -18,8 +18,8 @@ const SearchFun = ({ items, onFilter }) => {
 
   return (
     <form
-      style={{ width: "500px" }}
-      className="border border-black rounded-1 mt-2"
+      style={{ width: "500px", marginTop: "50px" }}
+      className="border border-black rounded-1 "
     >
       <div className="d-flex  rounded bg-light align-items-center ">
         <input

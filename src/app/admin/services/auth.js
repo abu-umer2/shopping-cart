@@ -20,11 +20,25 @@ const AuthServices = {
       `http://${dbserver.server}:${dbserver.port}/sub-categories/subs/${category}`
     );
   },
-  createCategory({ name }) {
-    const payload = { name };
+  createCategory(formData) {
+    console.log("form", formData);
+
     return axios.post(
       `http://${dbserver.server}:${dbserver.port}/categories`,
-      payload
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+  },
+  updateCategory: (formData, selectedId) => {
+    console.log("form", formData);
+    return axios.patch(
+      `http://${dbserver.server}:${dbserver.port}/categories/${selectedId}`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
     );
   },
   fetchAllSubCategories() {
